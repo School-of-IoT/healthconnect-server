@@ -82,8 +82,12 @@ app.get("/patient/age/:age", async (req, res) => {
     
 });
 
+// GET
+// route: /patient/login/<params>
+// description: To get all patient with 'age'
+// parameter: age 
 
-app.get("/login", async (req, res) => {
+app.get("/patient/login", async (req, res) => {
     try {
         const body = req.query;
         const pass = body.pass;
@@ -123,11 +127,11 @@ app.get("/login", async (req, res) => {
 
 
 // POST
-// route: /patient/new
+// route: /patient/signup
 // description: To add new patient
 // parameter: none 
 // request body: patient object
-app.post("/patient/new", async(req, res) => {
+app.post("/patient/signup", async(req, res) => {
 
     try{
         const { newpatient } = req.body;
