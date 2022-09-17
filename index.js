@@ -134,12 +134,12 @@ app.get("/patient/login", async (req, res) => {
 app.post("/patient/signup", async(req, res) => {
 
     try{
-        const { newpatient } = req.body;
+        var { newpatient } = req.body;
         const pass = newpatient.pass;
         console.log(pass);
         const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
       console.log(patient_pass);
-        const newpatient.pass = patient_pass;
+        var newpatient.pass = patient_pass;
         await patientModel.create(newpatient);
         const { _id } = req.params;
         return res.json({message: "Patient Created", _id: _id});
