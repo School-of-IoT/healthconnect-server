@@ -138,10 +138,21 @@ app.post("/patient/signup", async(req, res) => {
         const pass = newpatient.pass;
         console.log(pass);
         const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
-      console.log(patient_pass);
-        var newpatient[0].pass = patient_pass;
+        console.log(patient_pass);
+      
         await patientModel.create(newpatient);
         const { _id } = req.params;
+      
+        const { patientData } = {
+                                "patientData":{
+                                    "pass" : patient_pass
+                                }
+                            };
+        const updatepatient = await patientModel.findByIdAndUpdate(
+            _id,
+            { $set: patientData},
+            { new: true}     
+        );
         return res.json({message: "Patient Created", _id: _id});
     } 
     catch(error){
