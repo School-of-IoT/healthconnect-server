@@ -95,28 +95,30 @@ app.get("/login", async (req, res) => {
 
         const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
         
-        const patient_ = await patientModel.find({pass: patient_pass});
+        const patient = await patientModel.find({pass: patient_pass});
         
         //console.log(patient == []);
-        const check = (patient_ == []);
+        const check = (patient == []);
         
       
         if (!check){    
-            const valpass = patient_[0].pass;
-            const valuser = patient_[0].user;   
+            const valpass = patient[0].pass;
+            const valuser = patient[0].user;   
             
             if ((valpass == patient_pass) && (valuser == user)){
-                return res.json ({ patient_ });
+                return res.json ({ patient });
             }
             else{
-                return res.json({message: "Incorrect Username or Password"});
+                //return res.json({message: "Incorrect Username or Password"});
+              return res.status(500).json({error: error.message});
             }
         }   
         else{
-            return res.json({message: "Incorrect Username or Password"});
+            return res.status(500).json({error: error.message});
+            //return res.json({message: "Incorrect Username or Password"});
         }    
         
-        return res.json (patient_);
+        return res.json (patient);
         //return res.json ({ patient });
     } 
     catch(error) {
