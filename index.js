@@ -145,7 +145,7 @@ app.post("/patient/signup", async(req, res) => {
       
         const { patientData } = {
                                     "patientData":{
-                                        "pass" : patient_pass
+                                        "pass" : patient_pass 
                                     }
                                 };
         console.log(patientData);
@@ -154,7 +154,8 @@ app.post("/patient/signup", async(req, res) => {
             { $set: patientData},
             { new: true}     
         );
-        res.json({patient: updatepatient});
+        console.log(updatepatient);
+        //res.json({patient: updatepatient});
         return res.json({message: "Patient Created", _id: _id});
     } 
     catch(error){
