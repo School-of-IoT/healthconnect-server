@@ -95,7 +95,7 @@ app.get("/login", async (req, res) => {
 
         const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
         
-        const patient = await patientModel.find({pass: patient_pass});
+        const patient = await patientModel.find({user: user, pass: patient_pass});
         
         //console.log(patient == []);
         const check = (patient == []);
