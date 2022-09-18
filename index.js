@@ -152,6 +152,7 @@ app.post("/patient/signup", async(req, res) => {
         });
 
         const { _id } = req.params;
+        console.log(_id);
 
         //console.log(updatepatient);
         //res.json({patient: updatepatient});
