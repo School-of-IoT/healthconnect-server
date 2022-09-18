@@ -87,7 +87,7 @@ app.get("/patient/age/:age", async (req, res) => {
 // description: To get all patient with 'age'
 // parameter: age 
 
-app.get("/patient/login", async (req, res) => {
+app.get("/login", async (req, res) => {
     try {
         const body = req.query;
         const pass = body.pass;
@@ -138,9 +138,9 @@ app.post("/patient/signup", async(req, res) => {
         var { newpatient } = req.body;
         const pass = newpatient.pass;
         const user = newpatient.user;
-        console.log(pass);
+        //console.log(pass);
         const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
-        console.log(patient_pass);
+        //console.log(patient_pass);
       
         await patientModel.create(newpatient);
         
