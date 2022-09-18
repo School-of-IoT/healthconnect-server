@@ -144,7 +144,7 @@ app.post("/patient/signup", async(req, res) => {
         await patientModel.create(newpatient);
         
 
-        const filter = { user: 'Jean-Luc Picard' };
+        const filter = { user: user };
         const update = { pass: patient_pass };
 
         let doc = await patientModel.findOneAndUpdate(filter, update, {
