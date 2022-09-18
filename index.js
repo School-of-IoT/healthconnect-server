@@ -181,6 +181,7 @@ app.put("/patient/update/:_id", async (req, res) => {
             { $set: patientData},
             { new: true}     
         );
+        console.log(updatepatient);
         return res.json({patient: updatepatient});  
     }
     catch(error){
