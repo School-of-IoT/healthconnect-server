@@ -87,7 +87,7 @@ app.get("/patient/age/:age", async (req, res) => {
 // description: To get all patient with 'age'
 // parameter: age 
 
-app.get("/login", async (req, res) => {
+app.get("/patient/login", async (req, res) => {
     try {
         const body = req.query;
         const pass = body.pass;
@@ -95,17 +95,18 @@ app.get("/login", async (req, res) => {
 
         const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
         
-        const patient = await patientModel.find({pass: patient_pass});
+        const patient_ = await patientModel.find({pass: patient_pass});
         
         //console.log(patient == []);
         const check = (patient == []);
         
+      
         if (!check){    
             const valpass = patient[0].pass;
             const valuser = patient[0].user;   
             
             if ((valpass == patient_pass) && (valuser == user)){
-                return res.json ({ patient });
+                return res.json ({ patient_ });
             }
             else{
                 return res.json({message: "Incorrect Username or Password"});
