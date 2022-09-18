@@ -87,7 +87,7 @@ app.get("/patient/age/:age", async (req, res) => {
 // description: To get all patient with 'age'
 // parameter: age 
 
-app.get("/patient/login", async (req, res) => {
+app.get("/login", async (req, res) => {
     try {
         const body = req.query;
         const pass = body.pass;
