@@ -154,6 +154,7 @@ app.post("/patient/signup", async(req, res) => {
             { $set: patientData},
             { new: true}     
         );
+        console.log(res.json({patient: updatepatient}));
         return res.json({message: "Patient Created", _id: _id});
     } 
     catch(error){
