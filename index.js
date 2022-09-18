@@ -144,10 +144,11 @@ app.post("/patient/signup", async(req, res) => {
         const { _id } = req.params;
       
         const { patientData } = {
-                                "patientData":{
-                                    "pass" : patient_pass
-                                }
-                            };
+                                    "patientData":{
+                                        "pass" : patient_pass
+                                    }
+                                };
+        console.log(patientData);
         const updatepatient = await patientModel.findByIdAndUpdate(
             _id,
             { $set: patientData},
@@ -171,6 +172,8 @@ app.put("/patient/update/:_id", async (req, res) => {
     try {
         const { _id } = req.params;
         const { patientData } = req.body;
+
+        console.log(patientData);
         const updatepatient = await patientModel.findByIdAndUpdate(
             _id,
             { $set: patientData},
