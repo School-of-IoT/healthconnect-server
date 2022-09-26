@@ -64,6 +64,29 @@ app.get("/patient/:_id", async (req, res) => {
 
 
 // GET
+// route: /patient/data
+// description: To get patient data with 'id' and 'pass'
+// parameter: _id & pass
+app.get("/patient/data", async (req, res) => {
+    
+    try{
+        const body = req.query;
+        const ID = body.uid;
+        const pass = body.auth;
+      
+        const patient = await patientModel.find({_id: ID, pass: pass});
+        if (!patient){
+            return res.json ({message: "No Data Found"});
+        }
+        return res.json ({ patient });
+    }
+    catch(error){
+        return res.status(500).json({error: error.message});
+    }    
+});
+
+
+// GET
 // route: /patient/age/:age
 // description: To get all patient with 'age'
 // parameter: age 
@@ -84,8 +107,8 @@ app.get("/patient/age/:age", async (req, res) => {
 
 // GET
 // route: /patient/login/<params>
-// description: To get all patient with 'age'
-// parameter: age 
+// description: To get all patient data with 'user' & 'pass'
+// parameter: user & pass
 
 app.get("/login", async (req, res) => {
     try {
