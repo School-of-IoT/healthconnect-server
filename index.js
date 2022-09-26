@@ -71,10 +71,10 @@ app.get("/patient/data", async (req, res) => {
     
     try{
         const body = req.query;
-        const ID = body.uid;
-        const pass = body.auth;
+        const uid = body.uid;
+        const auth = body.auth;
       
-        const patient = await patientModel.find({_id: ID, pass: pass});
+        const patient = await patientModel.find({_id: uid, pass: auth});
         if (!patient){
             return res.json ({message: "No Data Found"});
         }
