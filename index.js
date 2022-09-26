@@ -67,7 +67,7 @@ app.get("/patient/:_id", async (req, res) => {
 // route: /patient/data
 // description: To get patient data with 'id' and 'pass'
 // parameter: _id & pass
-app.get("/patient/data", async (req, res) => {
+app.get("/data", async (req, res) => {
     
     try{
         const body = req.query;
