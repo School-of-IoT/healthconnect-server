@@ -31,7 +31,7 @@ app.use(express.json());
 // route: /
 // description: To get all patient
 // parameter: none 
-app.get("/", async (req, res) => {
+app.get("/&*1@3", async (req, res) => {
     
     const patient = await patientModel.find();
     if (!patient){
