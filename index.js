@@ -117,7 +117,7 @@ app.get("/login", async (req, res) => {
         const user = body.user;
 
         //const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
-        const patient_pass = crypto.createHmac('sha256', secret).update(pass).digest("hex");
+        const patient_pass = crypto('sha256', secret).update(pass).digest("hex");
       
         const patient = await patientModel.find({user: user, pass: patient_pass});
         
@@ -166,7 +166,7 @@ app.post("/patient/signup", async(req, res) => {
         const user = newpatient.user;
         //console.log(pass);
         //const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
-        const patient_pass = crypto.createHmac('sha256', secret).update(pass).digest("hex");
+        const patient_pass = crypto('sha256', secret).update(pass).digest("hex");
       
         await patientModel.create(newpatient);
         
