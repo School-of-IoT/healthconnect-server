@@ -167,6 +167,9 @@ app.post("/patient/signup", async(req, res) => {
         const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
         //console.log(patient_pass);
       
+        newpatient.pass[0] = patient_pass;
+        console.log(newpatient.pass);
+      
         await patientModel.create(newpatient);
         
 
