@@ -116,9 +116,8 @@ app.get("/login", async (req, res) => {
         const pass = body.pass;
         const user = body.user;
 
-        //const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
-        const patient_pass = crypto('sha256', secret).update(pass).digest("hex");
-      
+        const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
+        
         const patient = await patientModel.find({user: user, pass: patient_pass});
         
         //console.log(patient == []);
@@ -165,35 +164,12 @@ app.post("/patient/signup", async(req, res) => {
         const pass = newpatient.pass;
         const user = newpatient.user;
         //console.log(pass);
-        //const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
-        const patient_pass = crypto('sha256', secret).update(pass).digest("hex");
+        const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
+        //console.log(patient_pass);
       
-      
-      const patient = await patientModel.find({user: user, pass: patient_pass});
+        await patientModel.create(newpatient);
         
-        //console.log(patient == []);
-        const check = (patient == []);
-        
-      
-        if (!check){    
-            const valpass = patient[0].pass;
-            const valuser = patient[0].user;   
-            
-            if ((valpass == patient_pass) && (valuser == user)){
-                return res.status(500).json({error: error.message});
-            }
-            else{
-                //return res.json({message: "Incorrect Username or Password"});
-              await patientModel.create(newpatient);
-            }
-        }   
-        else{
-            await patientModel.create(newpatient);
-            //return res.json({message: "Incorrect Username or Password"});
-        }    
-      
-        //await patientModel.create(newpatient);
-        
+
         const filter = { user: user };
         const update = { pass: patient_pass };
 
