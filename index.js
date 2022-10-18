@@ -272,7 +272,7 @@ app.post("/patient/signup", async(req, res) => {
       
         const username_check = await patientModel.find({user: user});
         console.log(username_check);
-        const check = (username_check== []);
+        const check = (username_check== '[]');
         //console.log(check);
         
         if (!check){
