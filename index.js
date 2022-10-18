@@ -75,7 +75,7 @@ app.get("/dataa", async (req, res) => {
     
     try{
         const body = req.query;
-        const uid = body.uid;
+        const { uid } = body.uid;
         const ch_token = body.token;
       
         const patient = await patientModel.findById(uid);
