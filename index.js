@@ -83,7 +83,7 @@ app.get("/dataa", async (req, res) => {
             return res.json ({message: "No Data Found"});
         }
         else{
-            const valpass = patient[0].pass;
+            //const valpass = patient[0].pass;
             console.log(patient[0]);
             const auth_token = await crypto("sha256", token).update(valpass).digest("hex");
           
