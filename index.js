@@ -68,10 +68,10 @@ app.get("/patient/:_id", async (req, res) => {
 
 
 // GET
-// route: /patient/data
+// route: /patient/dataa
 // description: To get patient data with 'id' and 'pass'
 // parameter: _id & pass
-app.get("/data", async (req, res) => {
+app.get("/dataa", async (req, res) => {
     
     try{
         const body = req.query;
@@ -94,6 +94,30 @@ app.get("/data", async (req, res) => {
               return res.json ({message: "Token does not match. Try to Login Again."});
             }
         }    
+    }
+    catch(error){
+        return res.status(500).json({error: error.message});
+    }    
+});
+
+
+
+// GET
+// route: /patient/data
+// description: To get patient data with 'id' and 'pass'
+// parameter: _id & pass
+app.get("/data", async (req, res) => {
+    
+    try{
+        const body = req.query;
+        const uid = body.uid;
+        const auth = body.auth;
+      
+        const patient = await patientModel.find({_id: uid, pass: auth});
+        if (!patient){
+            return res.json ({message: "No Data Found"});
+        }
+        return res.json ({ patient });
     }
     catch(error){
         return res.status(500).json({error: error.message});
