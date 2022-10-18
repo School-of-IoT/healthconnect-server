@@ -8,8 +8,12 @@ const connectDB = require("./connection");
 // mongoose model
 const patientModel = require("./patient");
 
+const date_ob = new Date();
+const moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours()+':'+date_ob.getMinutes());
+
 //hashing
-const secret = "HEALTH_CONNECT";
+const secret = process.env.CRYPTO_SECRET;
+const token = process.env.CRYPTO_TOKEN + moment;
 const crypto = require("crypto").createHmac;
 
 //const sha256Hasher = crypto.
@@ -72,13 +76,24 @@ app.get("/data", async (req, res) => {
     try{
         const body = req.query;
         const uid = body.uid;
-        const auth = body.auth;
+        const ch_token = body.token;
       
-        const patient = await patientModel.find({_id: uid, pass: auth});
+        const patient = await patientModel.findById(uid);
         if (!patient){
             return res.json ({message: "No Data Found"});
         }
-        return res.json ({ patient });
+        else{
+            const valpass = patient[0].pass;
+            const auth_token = await crypto("sha256", token).update(valpass).digest("hex");
+          
+            if (auth_token == ch_token)
+            {
+              return res.json ({ patient });
+            }
+            else{
+              return res.json ({message: "Token does not match. Try to Login Again."});
+            }
+        }    
     }
     catch(error){
         return res.status(500).json({error: error.message});
@@ -86,24 +101,72 @@ app.get("/data", async (req, res) => {
 });
 
 
-// GET
-// route: /patient/age/:age
-// description: To get all patient with 'age'
-// parameter: age 
-app.get("/patient/age/:age", async (req, res) => {
+
+app.get("/loginn", async (req, res) => {
     try {
-        const { age } = req.params;
-        const patient = await patientModel.find({Age: age});
-        if (!patient){
-            return res.json({message: "No patient found"});
+        const body = req.query;
+        const pass = body.pass;
+        const user = body.user;
+
+        const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
+        
+        const patient = await patientModel.find({user: user, pass: patient_pass});
+        
+        //console.log(patient == []);
+        const check = (patient == []);
+        
+      
+        if (!check){    
+            const valpass = patient[0].pass;
+            const valuser = patient[0].user;   
+            
+            if ((valpass == patient_pass) && (valuser == user)){
+              
+                const uid = patient[0]._id;
+              
+                const auth_token = await crypto("sha256", token).update(valpass).digest("hex");
+                //return res.json ({ patient });
+                return res.json({uid: uid, token: auth_token});
+            }
+            else{
+                //return res.json({message: "Incorrect Username or Password"});
+              return res.status(500).json({error: error.message});
+            }
         }   
-        return res.json ({ patient });
+        else{
+            return res.status(500).json({error: error.message});
+            //return res.json({message: "Incorrect Username or Password"});
+        }    
+        
+        return res.json (patient);
+        //return res.json ({ patient });
     } 
     catch(error) {
+        
         return res.status(500).json({error: error.message});
     }
     
 });
+
+
+// GET
+// route: /patient/age/:age
+// description: To get all patient with 'age'
+// parameter: age 
+// app.get("/patient/age/:age", async (req, res) => {
+//     try {
+//         const { age } = req.params;
+//         const patient = await patientModel.find({Age: age});
+//         if (!patient){
+//             return res.json({message: "No patient found"});
+//         }   
+//         return res.json ({ patient });
+//     } 
+//     catch(error) {
+//         return res.status(500).json({error: error.message});
+//     }
+    
+// });
 
 // GET
 // route: /patient/login/<params>
