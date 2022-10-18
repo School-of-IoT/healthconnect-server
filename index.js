@@ -271,8 +271,10 @@ app.post("/patient/signup", async(req, res) => {
         const user = newpatient.user;
       
         const username_check = await patientModel.find({user: user});
+
+        const check = (username_check== []);
       
-        if (username_check){
+        if (check){
           return res.status(500).json({error: "Username exists"});
         }
       
