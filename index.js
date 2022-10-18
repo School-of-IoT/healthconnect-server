@@ -364,6 +364,11 @@ app.delete("/patient/delete/:_id", async (req, res) => {
     
 // });
 
+
+app.get('*', function(req, res){
+    res.sendFile(__dirname+'/404.html');
+    });
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => connectDB()
