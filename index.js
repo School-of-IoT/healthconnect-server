@@ -66,6 +66,24 @@ app.get("/patient/:_id", async (req, res) => {
     
 });
 
+app.get("/geo_locate/:user", async (req, res) => {
+    
+    try{
+        const { user } = req.params;
+        const patient = await patientModel.find({user: user});
+        let api = process.env.GEO_API;
+        if (!patient){
+            return res.json ({message: "invalid user"});
+        }
+        return res.json ({geo_api: api});
+    }
+    catch(error){
+        return res.status(500).json({error: error.message});
+    }
+    
+    
+});
+
 
 // GET
 // route: /patient/dataa
@@ -132,7 +150,7 @@ app.get("/login", async (req, res) => {
         const body = req.query;
         const pass = body.pass;
         const user = body.user;
-
+      
         const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
         
         const patient = await patientModel.find({user: user, pass: patient_pass});
@@ -251,6 +269,13 @@ app.post("/patient/signup", async(req, res) => {
         var { newpatient } = req.body;
         const pass = newpatient.pass;
         const user = newpatient.user;
+      
+        const username_check = await patientModel.find({user: user});
+      
+        if (username_check){
+          return res.status(500).json({error: "Username exists"});
+        }
+      
         //console.log(pass);
         const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
         //console.log(patient_pass);
