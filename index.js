@@ -9,7 +9,7 @@ const connectDB = require("./connection");
 const patientModel = require("./patient");
 
 const date_ob = new Date();
-const moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours()+':'+date_ob.getMinutes());
+const moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours()+':'+date_ob.getMinutes();
 
 //hashing
 const secret = process.env.CRYPTO_SECRET;
