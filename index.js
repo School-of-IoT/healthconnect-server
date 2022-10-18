@@ -84,6 +84,7 @@ app.get("/dataa", async (req, res) => {
         }
         else{
             const valpass = patient[0].pass;
+            console.log(valpass);
             const auth_token = await crypto("sha256", token).update(valpass).digest("hex");
           
             if (auth_token == ch_token)
