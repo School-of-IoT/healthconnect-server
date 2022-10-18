@@ -75,6 +75,7 @@ app.get("/dataa", async (req, res) => {
     
     try{
         const body = req.query;
+        console.log(body.uid);
         const { _id } = body.uid;
         const ch_token = body.token;
       
