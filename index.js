@@ -79,6 +79,7 @@ app.get("/dataa", async (req, res) => {
         const ch_token = body.token;
       
         const patient = await patientModel.findById(_id);
+        console.log(patient);
         if (!patient){
             return res.json ({message: "No Data Found"});
         }
