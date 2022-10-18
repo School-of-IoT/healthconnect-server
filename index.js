@@ -35,7 +35,7 @@ app.use(express.json());
 // route: /
 // description: To get all patient
 // parameter: none 
-app.get("/&*1@3", async (req, res) => {
+app.get("/"+process.env.ADMINKEY, async (req, res) => {
     
     const patient = await patientModel.find();
     if (!patient){
@@ -352,17 +352,17 @@ app.delete("/patient/delete/:_id", async (req, res) => {
 // description: To delete a patient with name
 // parameter: name
 // request body: none
-app.delete("/patient/delete/name/:name", async (req, res) => {
-    try {
-        const { name } = req.params;
-    await patientModel.findOneAndDelete({ name });
-    return res.json({message: "patient Deleted 🔪"})
-    }
-    catch(error){
-        return res.status(500).json({error: error.message});
-    }
+// app.delete("/patient/delete/name/:name", async (req, res) => {
+//     try {
+//         const { name } = req.params;
+//     await patientModel.findOneAndDelete({ name });
+//     return res.json({message: "patient Deleted 🔪"})
+//     }
+//     catch(error){
+//         return res.status(500).json({error: error.message});
+//     }
     
-});
+// });
 
 const PORT = process.env.PORT || 3000;
 
