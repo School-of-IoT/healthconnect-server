@@ -102,7 +102,7 @@ app.get("/data", async (req, res) => {
         }
         else{
             const valpass = patient[0].pass;
-            console.log(valpass);
+            //console.log(valpass);
             const auth_token = await crypto("sha256", token).update(valpass).digest("hex");
           
             if (auth_token == ch_token)
@@ -271,11 +271,11 @@ app.post("/patient/signup", async(req, res) => {
         const user = newpatient.user;
       
         const username_check = await patientModel.find({user: user});
-
+        console.log(username_check);
         const check = (username_check== []);
-        console.log(check);
+        //console.log(check);
         
-        if (check){
+        if (!check){
           return res.status(500).json({error: "Username exists"});
         }
       
