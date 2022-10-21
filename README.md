@@ -88,7 +88,7 @@ Description: To get JIT token with 'user' & 'pass'
 Parameter: user & pass - original client key
 Response: JIT Token
 ```
-Example - https://healthconnect-server.herokuapp.com/login?user=elon&pass=musk
+Example - https://healthconnect-server.herokuapp.com/login?user=elon&pass=xxxx
 
  ```json
 {
@@ -155,7 +155,7 @@ Request Body -
       "WeightLoss": 0,
       "BGroup": "O+",
       "Sex": "Male",
-      "pass": "musk",
+      "pass": "xxxx",
       "user": "elon"
   }
 }
