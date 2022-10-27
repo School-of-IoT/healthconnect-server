@@ -97,14 +97,56 @@ app.get("/patient/device/:user", async (req, res) => {
         if (!patient){
             return res.json ({message: "invalid user"});
         }
-        let mqttserver = process.env.MQTTSERVER;
-        let mqttUser = process.env.MQTTUSER;
-        let mqttPass = process.env.MQTTPASS;
-        return res.json ({mqttserver: mqttserver, mqttUser: mqttUser, mqttPass: mqttPass});
+        
     }
     catch(error){
         return res.status(500).json({error: error.message});
-    }   
+    } 
+    
+      
+       
+});
+
+
+
+// GET
+// route: /med/device
+// description: To get MQTT-server URL, userName and password, used for third party MQTT service
+// parameter: user & pass
+app.get("/med/device", async (req, res) => {
+
+    try {
+    
+        const body = req.query;
+        const pass = body.pass;
+        const user = body.user;
+        const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
+        const patient = await patientModel.find({user: user, pass: patient_pass});
+        const check = (patient == []);
+      
+        if (!check){    
+            const valpass = patient[0].pass;
+            const valuser = patient[0].user;   
+            
+            if ((valpass == patient_pass) && (valuser == user)){
+                let mqttserver = process.env.MQTTSERVER;
+                let mqttUser = process.env.MQTTUSER;
+                let mqttPass = process.env.MQTTPASS;
+                return res.json ({mqttserver: mqttserver, mqttUser: mqttUser, mqttPass: mqttPass});
+                
+            }
+            else{
+                return res.status(500).json({error: error.message});
+            }
+        }   
+        else{
+            return res.status(500).json({error: error.message});
+        }    
+        return res.json (patient);
+    } 
+    catch(error) {
+        return res.status(500).json({error: error.message});
+    }
        
 });
 
