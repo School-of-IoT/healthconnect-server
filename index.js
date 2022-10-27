@@ -14,7 +14,6 @@ const secret = process.env.CRYPTO_SECRET;
 const token = process.env.CRYPTO_TOKEN + moment;
 const adminkey = process.env.ADMINKEY;
 
-
 const crypto = require("crypto").createHmac;
 
 const app = express();
@@ -73,15 +72,40 @@ app.get("/geo_locate/:user", async (req, res) => {
     try{
         const { user } = req.params;
         const patient = await patientModel.find({user: user});
-        let api = process.env.GEO_API;
+        
         if (!patient){
             return res.json ({message: "invalid user"});
         }
+        let api = process.env.GEO_API;
         return res.json ({geo_api: api});
     }
     catch(error){
         return res.status(500).json({error: error.message});
     }   
+});
+
+// GET
+// route: /patient/device/:user
+// description: To get MQTT-server URL, userName and password, used for third party MQTT service
+// parameter: user 
+app.get("/patient/device/:user", async (req, res) => {
+
+    try {
+        const { user } = req.params;
+        const patient = await patientModel.find({user: user});
+        
+        if (!patient){
+            return res.json ({message: "invalid user"});
+        }
+        let mqttserver = process.env.MQTTSERVER;
+        let mqttUser = process.env.MQTTUSER;
+        let mqttPass = process.env.MQTTPASS;
+        return res.json ({mqttserver: mqttserver, mqttUser: mqttUser, mqttPass: mqttPass});
+    }
+    catch(error){
+        return res.status(500).json({error: error.message});
+    }   
+       
 });
 
 
