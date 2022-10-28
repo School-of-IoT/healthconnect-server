@@ -115,7 +115,7 @@ app.get("/patient/device", async (req, res) => {
               return res.json ({message: "Token does not match. Try to Login Again."});
             }
         }    
-
+    }
 //     try {
 //         const { user } = req.params;
 //         const patient = await patientModel.find({user: user});
