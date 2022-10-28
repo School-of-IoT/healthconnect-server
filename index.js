@@ -97,6 +97,10 @@ app.get("/patient/device/:user", async (req, res) => {
         if (!patient){
             return res.json ({message: "invalid user"});
         }
+        let mqttserver = process.env.MQTTSERVER;
+        let mqttUser = process.env.MQTTUSER;
+        let mqttPass = process.env.MQTTPASS;
+        return res.json ({mqttserver: mqttserver, mqttUser: mqttUser, mqttPass: mqttPass});
         
     }
     catch(error){
@@ -113,7 +117,7 @@ app.get("/patient/device/:user", async (req, res) => {
 // route: /med/device
 // description: To get MQTT-server URL, userName and password, used for third party MQTT service
 // parameter: user & pass
-app.get("/med/device", async (req, res) => {
+app.get("/node/device", async (req, res) => {
 
     try {
     
