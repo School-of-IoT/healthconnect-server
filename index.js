@@ -7,8 +7,8 @@ const patientModel = require("./patient");
 
 //JIT(Just-in-time) handler
 const date_ob = new Date();
-const moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours()+':'+date_ob.getMinutes();
-
+//const moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours()+':'+date_ob.getMinutes();
+const moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
 //secret handling
 const secret = process.env.CRYPTO_SECRET;
 const token = process.env.CRYPTO_TOKEN + moment;
@@ -88,21 +88,47 @@ app.get("/geo_locate/:user", async (req, res) => {
 // route: /patient/device/:user
 // description: To get MQTT-server URL, userName and password, used for third party MQTT service
 // parameter: user 
-app.get("/patient/device/:user", async (req, res) => {
-
-    try {
-        const { user } = req.params;
+app.get("/patient/device", async (req, res) => {
+  
+  
+    try{
+        const body = req.query;
+        const user = body.user;
+        const ch_token = body.token;
         const patient = await patientModel.find({user: user});
         
         if (!patient){
-            return res.json ({message: "invalid user"});
+            return res.json ({message: "User not Found"});
         }
-        let mqttserver = process.env.MQTTSERVER;
-        let mqttUser = process.env.MQTTUSER;
-        let mqttPass = process.env.MQTTPASS;
-        return res.json ({mqttserver: mqttserver, mqttUser: mqttUser, mqttPass: mqttPass});
+        else{
+            const valpass = patient[0].pass;
+            const auth_token = await crypto("sha256", token).update(valpass).digest("hex");
+          
+            if (auth_token == ch_token)
+            {
+              let mqttserver = process.env.MQTTSERVER;
+              let mqttUser = process.env.MQTTUSER;
+              let mqttPass = process.env.MQTTPASS;
+              return res.json ({mqttserver: mqttserver, mqttUser: mqttUser, mqttPass: mqttPass});
+            }
+            else{
+              return res.json ({message: "Token does not match. Try to Login Again."});
+            }
+        }    
+
+//     try {
+//         const { user } = req.params;
+//         const patient = await patientModel.find({user: user});
         
-    }
+//         if (!patient){
+//             return res.json ({message: "invalid user"});
+//         }
+//         let mqttserver = process.env.MQTTSERVER;
+//         let mqttUser = process.env.MQTTUSER;
+//         let mqttPass = process.env.MQTTPASS;
+//         return res.json ({mqttserver: mqttserver, mqttUser: mqttUser, mqttPass: mqttPass});
+        
+//     }
     catch(error){
         return res.status(500).json({error: error.message});
     } 
