@@ -88,7 +88,7 @@ app.get("/geo_locate/:user", async (req, res) => {
 // route: /patient/device/:user
 // description: To get MQTT-server URL, userName and password, used for third party MQTT service
 // parameter: user 
-app.get("/patient/device", async (req, res) => {
+app.get("/portal/device", async (req, res) => {
   
   
     try{
