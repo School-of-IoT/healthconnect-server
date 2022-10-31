@@ -26,7 +26,8 @@ const patientSchema = new mongoose.Schema({
     BGroup: String,
     Sex: String,
     pass: String,
-    user: String
+    user: String,
+    devtoken: String
     });
 
 const patientModel = mongoose.model("Patient_Data", patientSchema);

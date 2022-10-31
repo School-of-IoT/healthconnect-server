@@ -14,6 +14,7 @@ const secret = process.env.CRYPTO_SECRET;
 const token = process.env.CRYPTO_TOKEN + moment;
 const adminkey = process.env.ADMINKEY;
 
+
 const crypto = require("crypto").createHmac;
 
 const app = express();
@@ -141,7 +142,53 @@ app.get("/portal/device", async (req, res) => {
 
 
 // GET
-// route: /med/device
+// route: /node/create
+// description: To create new device token - stored in DB and used by device to receive mqtt details
+// parameter: user & pass
+app.get("/node/create", async (req, res) => {
+    
+    try{
+        const body = req.query;
+        const pass = body.pass;
+        const user = body.user;
+        const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
+        const patient = await patientModel.find({user: user, pass: patient_pass});
+        const check = (patient == []);
+      
+        if (!check){    
+            const valpass = patient[0].pass;
+            const valuser = patient[0].user;   
+            
+            if ((valpass == patient_pass) && (valuser == user)){
+                let tkn = await crypto("sha256", moment).update(pass).digest("hex");
+                
+
+                const filter = { user: user };
+                const update = { devtoken: tkn };
+
+                let doc = await patientModel.findOneAndUpdate(filter, update, {
+                new: true
+                });
+                return res.json ({device_token: tkn});
+                
+            }
+            else{
+                return res.status(500).json({error: error.message});
+            }
+        }   
+        else{
+            return res.status(500).json({error: error.message});
+        }    
+        return res.json (patient);
+    }
+    catch(error){
+        return res.status(500).json({error: error.message});
+    }   
+});
+
+
+// GET
+// route: /node/device
 // description: To get MQTT-server URL, userName and password, used for third party MQTT service
 // parameter: user & pass
 app.get("/node/device", async (req, res) => {
