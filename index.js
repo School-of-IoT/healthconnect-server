@@ -171,7 +171,7 @@ app.get("/node/create", async (req, res) => {
                 let doc = await patientModel.findOneAndUpdate(filter, update, {
                 new: true
                 });
-                return res.json ({device_token: tkn});   
+                return res.json ({device_token: tkn, time: moment_s});   
             }      
         }   
     }
