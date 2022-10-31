@@ -9,6 +9,8 @@ const patientModel = require("./patient");
 const date_ob = new Date();
 //const moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours()+':'+date_ob.getMinutes();
 const moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
+const moment_s = moment+':'+date_ob.getMinutes()+':'+date_ob.getSeconds();
+
 //secret handling
 const secret = process.env.CRYPTO_SECRET;
 const token = process.env.CRYPTO_TOKEN + moment;
@@ -160,7 +162,7 @@ app.get("/node/create", async (req, res) => {
             const valuser = patient[0].user;   
             
             if ((valpass == patient_pass) && (valuser == user)){
-                let tkn = await crypto("sha256", moment).update(pass).digest("hex");
+                let tkn = await crypto("sha256", moment_s).update(pass).digest("hex");
                 
 
                 const filter = { user: user };
@@ -169,20 +171,12 @@ app.get("/node/create", async (req, res) => {
                 let doc = await patientModel.findOneAndUpdate(filter, update, {
                 new: true
                 });
-                return res.json ({device_token: tkn});
-                
-            }
-            else{
-                return res.status(500).json({error: error.message, stage: 3 });
-            }
+                return res.json ({device_token: tkn});   
+            }      
         }   
-        else{
-            return res.status(500).json({error: error.message, stage: 2 });
-        }    
-        return res.json (patient);
     }
     catch(error){
-        return res.status(500).json({error: error.message, stage: 1 });
+        return res.status(500).json({error: error.message});
     }   
 });
 
@@ -220,7 +214,7 @@ app.get("/node/device", async (req, res) => {
         else{
             return res.status(500).json({error: error.message});
         }    
-        return res.json (patient);
+        
     } 
     catch(error) {
         return res.status(500).json({error: error.message});
