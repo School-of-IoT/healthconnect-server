@@ -9,7 +9,7 @@ const patientModel = require("./patient");
 const date_ob = new Date();
 //const moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours()+':'+date_ob.getMinutes();
 const moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
-const moment_s = moment+':'+date_ob.getMinutes()+':'+date_ob.getSeconds();
+const moment_s = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours()+':'+date_ob.getMinutes()+':'+date_ob.getSeconds();
 
 //secret handling
 const secret = process.env.CRYPTO_SECRET;
