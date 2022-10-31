@@ -173,16 +173,16 @@ app.get("/node/create", async (req, res) => {
                 
             }
             else{
-                return res.status(500).json({error: error.message});
+                return res.status(500).json({error: error.message, stage: 3 });
             }
         }   
         else{
-            return res.status(500).json({error: error.message});
+            return res.status(500).json({error: error.message, stage: 2 });
         }    
         return res.json (patient);
     }
     catch(error){
-        return res.status(500).json({error: error.message});
+        return res.status(500).json({error: error.message, stage: 1 });
     }   
 });
 
