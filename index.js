@@ -200,10 +200,10 @@ app.get("/node/device", async (req, res) => {
         const check = (patient == []);
       
         if (!check){    
-            const valpass = patient[0].pass;
+            const valtoken = patient[0].devtoken;
             const valuser = patient[0].user;   
             
-            if ((valpass == patient_pass) && (valuser == user)){
+            if ((valtoken == dev_token) && (valuser == user)){
                 let mqttserver = process.env.MQTTSERVER;
                 let mqttUser = process.env.MQTTUSER;
                 let mqttPass = process.env.MQTTPASS;
