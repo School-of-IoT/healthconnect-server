@@ -5,15 +5,11 @@ const express = require("express");
 const connectDB = require("./connection");
 const patientModel = require("./patient");
 
-//JIT(Just-in-time) handler
-const date_ob = new Date();
-//const moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours()+':'+date_ob.getMinutes();
-var moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
-var moment_s = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours()+':'+date_ob.getMinutes()+':'+date_ob.getSeconds();
+
 
 //secret handling
 const secret = process.env.CRYPTO_SECRET;
-const token = process.env.CRYPTO_TOKEN + moment;
+
 const adminkey = process.env.ADMINKEY;
 
 
@@ -106,6 +102,11 @@ app.get("/portal/device", async (req, res) => {
         }
         else{
             const valpass = patient[0].pass;
+
+            //JIT(Just-in-time) handler
+            var date_ob = new Date();
+            var moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
+            const token = process.env.CRYPTO_TOKEN + moment;
             const auth_token = await crypto("sha256", token).update(valpass).digest("hex");
           
             if (auth_token == ch_token)
@@ -162,9 +163,12 @@ app.get("/node/create", async (req, res) => {
             const valuser = patient[0].user;   
             
             if ((valpass == patient_pass) && (valuser == user)){
+                //JIT(Just-in-time) handler
+                var date_ob = new Date();
+                var moment_s = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours()+':'+date_ob.getMinutes()+':'+date_ob.getSeconds();
+                
                 let tkn = await crypto("sha256", moment_s).update(pass).digest("hex");
                 
-
                 const filter = { user: user };
                 const update = { devtoken: tkn };
 
@@ -240,6 +244,10 @@ app.get("/data", async (req, res) => {
         }
         else{
             const valpass = patient[0].pass;
+            //JIT(Just-in-time) handler
+            var date_ob = new Date();
+            var moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
+            const token = process.env.CRYPTO_TOKEN + moment;
             const auth_token = await crypto("sha256", token).update(valpass).digest("hex");
           
             if (auth_token == ch_token)
@@ -275,6 +283,10 @@ app.get("/login", async (req, res) => {
             
             if ((valpass == patient_pass) && (valuser == user)){
                 const uid = patient[0]._id;
+                //JIT(Just-in-time) handler
+                var date_ob = new Date();
+                var moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
+                const token = process.env.CRYPTO_TOKEN + moment;
                 const auth_token = await crypto("sha256", token).update(valpass).digest("hex");
                 return res.json({token: auth_token});
             }
