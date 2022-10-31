@@ -194,10 +194,9 @@ app.get("/node/device", async (req, res) => {
     try {
     
         const body = req.query;
-        const pass = body.pass;
+        const dev_token = body.token;
         const user = body.user;
-        const patient_pass = await crypto("sha256", secret).update(pass).digest("hex");
-        const patient = await patientModel.find({user: user, pass: patient_pass});
+        const patient = await patientModel.find({user: user, devtoken: dev_token});
         const check = (patient == []);
       
         if (!check){    
