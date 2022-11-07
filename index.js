@@ -132,10 +132,10 @@ app.get("/portal/device", async (req, res) => {
 
 
 // GET
-// route: /node/create
+// route: /devtkn/create
 // description: To create new device token - stored in DB and used by device to receive mqtt details
 // q-parameter: user & pass
-app.get("/node/create", async (req, res) => {
+app.get("/devtkn/create", async (req, res) => {
     
     try{
         const body = req.query;
@@ -171,10 +171,10 @@ app.get("/node/create", async (req, res) => {
 
 
 // GET
-// route: /node/device
+// route: /devtkn/device
 // description: To get MQTT-server URL, userName and password, used for third party MQTT service
 // q-parameter: user & pass
-app.get("/node/device", async (req, res) => {
+app.get("/devtkn/mqtt", async (req, res) => {
 
     try {
     
@@ -193,6 +193,45 @@ app.get("/node/device", async (req, res) => {
                 let mqttUser = process.env.MQTTUSER;
                 let mqttPass = process.env.MQTTPASS;
                 return res.json ({mqttserver: mqttserver, mqttUser: mqttUser, mqttPass: mqttPass});            
+            }          
+        }     
+    } 
+    catch(error) {
+        return res.status(500).json({error: error.message});
+    }
+       
+});
+
+
+// GET
+// route: /node/create
+// description: To create node device, node-xxxxxxx to be stored and used for data-exchange
+// q-parameter: user & dev_token
+// body: node-> String, type-> String, attribute-> String, lastUp-> String
+app.get("/node/create", async (req, res) => {
+
+    try {
+    
+        const quer = req.query;
+        const dev_token = quer.token;
+        const user = quer.user;
+        const { nodeData } = req.body;
+        
+        const patient = await patientModel.find({user: user, devtoken: dev_token});
+        const check = (patient == []);
+      
+        if (!check){    
+            const valtoken = patient[0].devtoken;
+            const valuser = patient[0].user;   
+            
+            if ((valtoken == dev_token) && (valuser == user)){
+                const updatepatient = await patientModel.findOneAndUpdate(
+                    valuser,
+                    { $set: nodeData},
+                    { new: true}     
+                );
+
+                return res.json ({message: "Node Created 🎆"});            
             }          
         }     
     } 
