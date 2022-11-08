@@ -218,7 +218,7 @@ app.put("/node/create", async (req, res) => {
         const { nodeData } = req.body;
         
         const patient = await patientModel.find({user: user, devtoken: dev_token});
-        const check = (patient == []);x
+        const check = (patient == []);
       
         if (!check){    
             const valtoken = patient[0].devtoken;
