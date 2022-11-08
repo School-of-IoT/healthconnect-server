@@ -215,18 +215,7 @@ app.get("/node/create", async (req, res) => {
         const quer = req.query;
         const dev_token = quer.token;
         const user = quer.user;
-
-        const node = req.body.node;
-        const type = req.body.type;
-        const attribute = req.body.attribute;
-        const lastUp = req.body.lastUp;
-        const nodeData = {
-            "node": node, 
-            "type": type, 
-            "attribute": attribute, 
-            "lastUp": lastUp
-        };
-        console.log(nodeData);
+        const { nodeData } = req.body;
         
         const patient = await patientModel.find({user: user, devtoken: dev_token});
         const check = (patient == []);
@@ -236,10 +225,15 @@ app.get("/node/create", async (req, res) => {
             const valuser = patient[0].user;   
             
             if ((valtoken == dev_token) && (valuser == user)){
+                
+                
+                const updatepatient = await patientModel.findOneAndUpdate(
+                    valuser,
+                    { $set: nodeData},
+                    { new: true}     
+                );
 
-                patient[0].devices.addToSet(nodeData);
-                console.log(nodeData);
-                return res.json ({message: "Node Created 🎆", node: node});            
+                return res.json ({message: "Node Created 🎆"});            
             }          
         }     
     } 

@@ -28,7 +28,7 @@ const patientSchema = new mongoose.Schema({
     pass: String,
     user: String,
     devtoken: String,
-    devices: [mongoose.Schema.Types.Mixed] //node: String, type: String, attribute: String, lastUp: String
+    devices: [{}]
     });
 
 const patientModel = mongoose.model("Patient_Data", patientSchema);
