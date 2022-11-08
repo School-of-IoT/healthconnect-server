@@ -208,7 +208,7 @@ app.get("/devtkn/mqtt", async (req, res) => {
 // description: To create node device, node-xxxxxxx to be stored and used for data-exchange
 // q-parameter: user & dev_token
 // body: node-> String, type-> String, attribute-> String, lastUp-> String
-app.get("/node/create", async (req, res) => {
+app.put("/node/create", async (req, res) => {
 
     try {
     
@@ -218,7 +218,7 @@ app.get("/node/create", async (req, res) => {
         const { nodeData } = req.body;
         
         const patient = await patientModel.find({user: user, devtoken: dev_token});
-        const check = (patient == []);
+        const check = (patient == []);x
       
         if (!check){    
             const valtoken = patient[0].devtoken;
