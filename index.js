@@ -226,8 +226,8 @@ app.get("/node/create", async (req, res) => {
             
             if ((valtoken == dev_token) && (valuser == user)){
                 patient[0].devices.addToSet(nodeData);
-
-                return res.json ({message: "Node Created 🎆"});            
+                console.log(nodeData);
+                return res.json ({message: "Node Created 🎆", log: nodeData});            
             }          
         }     
     } 
