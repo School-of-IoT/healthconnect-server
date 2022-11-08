@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const deviceSchema = new Schema({ node: String, type: String, attribute: String, lastUp: String });
+const deviceSchema = new mongoose.Schema({ node: String, type: String, attribute: String, lastUp: String });
 
 const patientSchema = new mongoose.Schema({
     Name: String,
