@@ -229,7 +229,7 @@ app.put("/node/create", async (req, res) => {
                 const filter = { user: user };
                 const updatepatient = await patientModel.findOneAndUpdate(
                     filter,
-                    { $set: nodeData},
+                    { $push: nodeData},
                     { new: true}     
                 );
 
