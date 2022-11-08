@@ -85,10 +85,10 @@ app.get("/geo_locate/:user", async (req, res) => {
 });
 
 // GET
-// route: /portal/device
-// description: To get MQTT-server URL, userName and device-token, used for third party MQTT service
+// route: /devtkn/portal
+// description: (On Portal) To get MQTT-server URL, userName and device-token, used for third party MQTT service
 // q-parameter: user & token
-app.get("/portal/device", async (req, res) => {
+app.get("/devtkn/portal", async (req, res) => {
   
   
     try{
@@ -172,9 +172,9 @@ app.get("/devtkn/create", async (req, res) => {
 
 // GET
 // route: /devtkn/device
-// description: To get MQTT-server URL, userName and password, used for third party MQTT service
-// q-parameter: user & pass
-app.get("/devtkn/mqtt", async (req, res) => {
+// description: (On Device) To get MQTT-server URL, userName and password, used for third party MQTT service
+// q-parameter: user & devtoken
+app.get("/devtkn/device", async (req, res) => {
 
     try {
     
@@ -203,11 +203,24 @@ app.get("/devtkn/mqtt", async (req, res) => {
 });
 
 
-// GET
+// PUT
 // route: /node/create
 // description: To create node device, node-xxxxxxx to be stored and used for data-exchange
 // q-parameter: user & dev_token
-// body: node-> String, type-> String, attribute-> String, lastUp-> String
+// body: 
+
+                // {
+                //     "nodeData":{
+                //         "devices":
+                //           { 
+                //             "node": "node-xxxxxx",
+                //             "type": "xxxxxx",
+                //             "attribute": "xxxx", 
+                //             "lastUp": "xx/xx/xx"
+                //           }
+                //     }
+                // }
+
 app.put("/node/create", async (req, res) => {
 
     try {
@@ -233,6 +246,7 @@ app.put("/node/create", async (req, res) => {
                     { new: true}     
                 );
 
+                
                 return res.json ({message: "Node Created 🎆"});            
             }          
         }     
