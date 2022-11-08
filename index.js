@@ -225,11 +225,7 @@ app.get("/node/create", async (req, res) => {
             const valuser = patient[0].user;   
             
             if ((valtoken == dev_token) && (valuser == user)){
-                const updatepatient = await patientModel.findOneAndUpdate(
-                    valuser,
-                    { $set: patient.addToSet(nodeData)},
-                    { new: true}     
-                );
+                patient[0].devices.addToSet(nodeData);
 
                 return res.json ({message: "Node Created 🎆"});            
             }          
