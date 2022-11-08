@@ -226,9 +226,9 @@ app.get("/node/create", async (req, res) => {
             
             if ((valtoken == dev_token) && (valuser == user)){
                 
-                
+                const filter = { user: user };
                 const updatepatient = await patientModel.findOneAndUpdate(
-                    user,
+                    filter,
                     { $set: nodeData},
                     { new: true}     
                 );
