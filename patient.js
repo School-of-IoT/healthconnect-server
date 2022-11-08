@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-const deviceSchema = new mongoose.Schema({ node: String, type: String, attribute: String, lastUp: String });
-
 const patientSchema = new mongoose.Schema({
     Name: String,
     Address: String,
@@ -30,7 +28,7 @@ const patientSchema = new mongoose.Schema({
     pass: String,
     user: String,
     devtoken: String,
-    devices: { type : Array , "default" : [deviceSchema] }
+    devices: { type : Array , "default" : [] } //node: String, type: String, attribute: String, lastUp: String
     });
 
 const patientModel = mongoose.model("Patient_Data", patientSchema);
