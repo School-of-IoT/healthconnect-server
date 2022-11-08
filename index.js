@@ -228,7 +228,7 @@ app.get("/node/create", async (req, res) => {
                 
                 
                 const updatepatient = await patientModel.findOneAndUpdate(
-                    valuser,
+                    user,
                     { $set: nodeData},
                     { new: true}     
                 );
