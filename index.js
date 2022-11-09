@@ -410,6 +410,43 @@ app.delete("/patient/delete/:_id", async (req, res) => {
     
 });
 
+
+// DELETE
+// route: /node/delete
+// description: To delete a node of a user
+// e-parameter:  
+app.delete("/node/delete", async (req, res) => {
+    try{
+        const quer = req.query;
+        const dev_token = quer.token;
+        const user = quer.user;
+        const node = quer.node;
+
+        const patient = await patientModel.find({user: user, devtoken: dev_token});
+        const check = (patient == []);
+      
+        if (!check){    
+            const valtoken = patient[0].devtoken;
+            const valuser = patient[0].user;   
+            
+            if ((valtoken == dev_token) && (valuser == user)){
+                
+                const filter = { user: user };
+                const updatepatient = await patientModel.findOneAndUpdate(
+                    filter,
+                    { $pull: { devices: { $gte: {node: node} } }}    
+                );
+                
+                return res.json ({message: "Node Deleted 🔪"});            
+            }          
+        }
+    }
+    catch(error){
+        return res.status(500).json({error: error.message});
+    }
+    
+});
+
 //Handle all other requests on the server unmatched with above requests
 app.get('*', function(req, res){
     res.sendFile(__dirname+'/404.html');
