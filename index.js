@@ -434,7 +434,7 @@ app.delete("/node/delete", async (req, res) => {
                 const filter = { user: user };
                 const updatepatient = await patientModel.findOneAndUpdate(
                     filter,
-                    { $pull: { devices: { $elemMatch: {node: node} } }}    
+                    { $pull: { devices: { $gte: {node: node} } }}    
                 );
                 
                 return res.json ({message: "Node Deleted 🔪"});            
