@@ -203,9 +203,9 @@ app.get("/devtkn/device", async (req, res) => {
 });
 
 
-// PUT
+// POST
 // route: /node/create
-// description: To create node device, node-xxxxxxx to be stored and used for data-exchange
+// description: To create NEW node device, node-xxxxxxx to be stored and used for data-exchange
 // q-parameter: user & dev_token
 // body: 
 
@@ -221,7 +221,7 @@ app.get("/devtkn/device", async (req, res) => {
                 //     }
                 // }
 
-app.put("/node/create", async (req, res) => {
+app.post("/node/create", async (req, res) => {
 
     try {
     
@@ -271,7 +271,7 @@ app.get("/data", async (req, res) => {
         const patient = await patientModel.find({user: user});
         
         if (!patient){
-            return res.json ({message: "No Data Found"});
+            return res.status(500).json ({message: "No Data Found"});
         }
         else{
             const valpass = patient[0].pass;
@@ -286,7 +286,7 @@ app.get("/data", async (req, res) => {
               return res.json ({ patient });
             }
             else{
-              return res.json ({message: "Token does not match. Try to Login Again."});
+              return res.status(500).json ({message: "Token does not match. Try to Login Again."});
             }
         }    
     }
@@ -413,8 +413,8 @@ app.delete("/patient/delete/:_id", async (req, res) => {
 
 // DELETE
 // route: /node/delete
-// description: To delete a node of a user
-// e-parameter:  
+// description: To delete a node device of a user
+// q-parameter: user, dev_token, node-ID
 app.delete("/node/delete", async (req, res) => {
     try{
         const quer = req.query;
