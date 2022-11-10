@@ -221,7 +221,7 @@ app.get("/devtkn/device", async (req, res) => {
                 //     }
                 // }
 
-app.post("/node/create", async (req, res) => {
+app.put("/node/create", async (req, res) => {
 
     try {
     
