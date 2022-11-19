@@ -296,6 +296,9 @@ app.get("/node/device", async (req, res) => {
         }     
     } 
     catch(error) {
+        if (error == "Cannot read property 'node' of undefined"){
+            return res.json ({message: "Node not Found"});  
+        }
         return res.status(500).json({error: error.message});
     }
        
