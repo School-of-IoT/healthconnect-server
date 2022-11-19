@@ -291,8 +291,7 @@ app.get("/node/device", async (req, res) => {
                         return res.json ({node: devarr[i].node, attribute: devarr[i].attribute});
                     }
                 }
-                console.log(nodeData);
-                return res.json ({message: "Node Created 🎆", log: nodeData});            
+                return res.json ({message: "Node not Found"});            
             }          
         }     
     } 
