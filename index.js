@@ -260,9 +260,8 @@ app.post("/node/create", async (req, res) => {
 
 // GET
 // route: /node/device
-// description: To view node device data, node-xxxxxxx to be stored and used for data-exchange
-// q-parameter: user, dev_token &
-// body: node-> String, type-> String, attribute-> String, lastUp-> String
+// description: To view node-xxxxxxx and attributes to be stored and used for data-exchange
+// q-parameter: user, dev_token & node-xxxxxxxx
 app.get("/node/device", async (req, res) => {
 
     try {
@@ -272,7 +271,6 @@ app.get("/node/device", async (req, res) => {
         const user = quer.user;
         const node = "node-"+quer.node;
         
-      
         const patient = await patientModel.find({user: user, devtoken: dev_token});
         const check = (patient == []);
       
@@ -280,8 +278,6 @@ app.get("/node/device", async (req, res) => {
             const valtoken = patient[0].devtoken;
             const valuser = patient[0].user;
              
-
-            
             if ((valtoken == dev_token) && (valuser == user)){
 
                 const devarr = patient[0].devices;
@@ -296,8 +292,8 @@ app.get("/node/device", async (req, res) => {
         }     
     } 
     catch(error) {
-        if (error == "Cannot read property 'node' of undefined"){
-            return res.json ({message: "Node not Found"});  
+        if (error.message == "Cannot read property 'node' of undefined"){
+            return res.status(500).json ({message: "Node not Found"});  
         }
         return res.status(500).json({error: error.message});
     }
