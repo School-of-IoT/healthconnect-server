@@ -205,7 +205,6 @@ Response -
 ```
 Description: To Update a Patient Information
 Parameter: ID - accessible by patient after login
-Request: JSON Body with new data
 ```
 Response -
 ```json
@@ -213,3 +212,38 @@ Response -
   "message": "Patient Deleted 🔪"
 }
 ```
+
+### 9. Generate New Device Token
+
+`GET` - `/devtkn/create?user=<user>&pass=<pass>`
+```
+Description: To Create New Device token
+Parameter: user and pass for authentication
+```
+Response -
+```json
+{
+  "device_token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 
+  "time": "D/MM/YYYY HH:MM:SS AM/PM",
+}
+```
+
+### 10. Request MQTT server Info (On Portal)
+
+`GET` - `/devtkn/portal?user=<user>&token=<dev_token>`
+```
+Description: To Request MQTT server Information
+Parameter: user & dev_token - device token is used as API key for the user
+```
+Response -
+```json
+{
+  "mqttserver": "xxxxx.xxxxx.xxxxx", 
+  "mqttUser": "xxxxxxxxxxx", 
+  "mqttPass": "xxxxxxxxxxx"
+}
+```
+
+### 11. Request MQTT server Info (On Device)
+
+`GET` - `/devtkn/device?user=<user>&token=<dev_token>`
