@@ -230,10 +230,10 @@ Response -
 
 ### 10. Request MQTT server Info (On Portal)
 
-`GET` - `/devtkn/portal?user=<user>&token=<dev_token>`
+`GET` - `/devtkn/portal?user=<user>&token=<session_token>`
 ```
 Description: To Request MQTT server Information
-Parameter: user & dev_token - device token is used as API key for the user
+Parameter: user & session_token - session token is used as API key for the user (generated upon JIT Token)
 ```
 Response -
 ```json
@@ -247,3 +247,77 @@ Response -
 ### 11. Request MQTT server Info (On Device)
 
 `GET` - `/devtkn/device?user=<user>&token=<dev_token>`
+```
+Description: To Request MQTT server Information
+Parameter: user & dev_token - device token is used as API key for the user
+```
+Response -
+```json
+{
+  "mqttserver": "xxxxx.xxxxx.xxxxx", 
+  "mqttUser": "xxxxxxxxxxx", 
+  "mqttPass": "xxxxxxxxxxx"
+}
+```
+
+### 12. Generate New Device Node
+
+`POST` - `/node/create?user=<user>&token=<dev_token>`
+```
+Description:  To create NEW node device, node-xxxxxxx to be stored and used for data-exchange
+Parameter: user & dev_token - device token is used as API key for the user
+Request: JSON Body with new data
+Response: Node Created message  
+```
+Request Body -
+```json
+{
+  "nodeData":
+    {
+      "devices":
+        { 
+          "node": "node-xxxxxx",
+          "type": "xxxxxx",
+          "attribute": "xxxx, xxxx", 
+          "lastUp": "xx/xx/xx"
+        }
+    }
+}
+```
+Response - 
+```json
+{
+  "message": "Node Created 🎆"
+}
+```
+
+### 13. Get Device Node Information
+
+`GET` - `/node/device?user=<user>&token=<dev_token>&node=<device_id>`
+```
+Description: To view node data
+Parameter: user, dev_token & node device
+Response: Node Information
+```
+Response - 
+```json
+{
+  "node": "node-xxxxxxx",
+  "attribute": "xxxx, xxxx"
+}
+```
+
+### 14. Delete Device Node
+
+`DELETR` - `/node/delete?user=<user>&token=<dev_token>&node=<device_id>`
+```
+Description: To delete Node Data
+Parameter: user, dev_token & node device
+Response: Node Deleted 
+```
+Response -
+```json
+{
+  "message": "Node Deleted 🔪"
+}
+```   
