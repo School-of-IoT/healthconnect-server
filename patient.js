@@ -28,7 +28,8 @@ const patientSchema = new mongoose.Schema({
     pass: String,
     user: String,
     devtoken: String,
-    devices: [{}]
+    devices: [{}],
+    ecg: [{}]
     });
 
 const patientModel = mongoose.model("Patient_Data", patientSchema);
