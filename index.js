@@ -85,10 +85,10 @@ app.get("/geo_locate/:user", async (req, res) => {
 });
 
 // GET
-// route: /portal/device
-// description: To get MQTT-server URL, userName and device-token, used for third party MQTT service
+// route: /devtkn/portal
+// description: (On Portal) To get MQTT-server URL, userName and device-token, used for third party MQTT service
 // q-parameter: user & token
-app.get("/portal/device", async (req, res) => {
+app.get("/devtkn/portal", async (req, res) => {
   
   
     try{
@@ -172,9 +172,9 @@ app.get("/devtkn/create", async (req, res) => {
 
 // GET
 // route: /devtkn/device
-// description: To get MQTT-server URL, userName and password, used for third party MQTT service
-// q-parameter: user & pass
-app.get("/devtkn/mqtt", async (req, res) => {
+// description: (On Device) To get MQTT-server URL, userName and password, used for third party MQTT service
+// q-parameter: user & devtoken
+app.get("/devtkn/device", async (req, res) => {
 
     try {
     
@@ -203,12 +203,25 @@ app.get("/devtkn/mqtt", async (req, res) => {
 });
 
 
-// GET
+// POST
 // route: /node/create
-// description: To create node device, node-xxxxxxx to be stored and used for data-exchange
+// description: To create NEW node device, node-xxxxxxx to be stored and used for data-exchange
 // q-parameter: user & dev_token
-// body: node-> String, type-> String, attribute-> String, lastUp-> String
-app.get("/node/create", async (req, res) => {
+// body: 
+
+                // {
+                //     "nodeData":{
+                //         "devices":
+                //           { 
+                //             "node": "node-xxxxxx",
+                //             "type": "xxxxxx",
+                //             "attribute": "xxxx", 
+                //             "lastUp": "xx/xx/xx"
+                //           }
+                //     }
+                // }
+
+app.post("/node/create", async (req, res) => {
 
     try {
     
@@ -225,13 +238,63 @@ app.get("/node/create", async (req, res) => {
             const valuser = patient[0].user;   
             
             if ((valtoken == dev_token) && (valuser == user)){
-                patient[0].devices.addToSet(nodeData);
-                console.log(nodeData);
-                return res.json ({message: "Node Created 🎆", log: nodeData});            
+                
+                const filter = { user: user };
+                const updatepatient = await patientModel.findOneAndUpdate(
+                    filter,
+                    { $push: nodeData},
+                    { new: true}     
+                );
+
+                
+                return res.json ({message: "Node Created 🎆"});            
             }          
         }     
     } 
     catch(error) {
+        return res.status(500).json({error: error.message});
+    }
+       
+});
+
+
+// GET
+// route: /node/device
+// description: To view node-xxxxxxx and attributes to be stored and used for data-exchange
+// q-parameter: user, dev_token & node-xxxxxxxx
+app.get("/node/device", async (req, res) => {
+
+    try {
+    
+        const quer = req.query;
+        const dev_token = quer.token;
+        const user = quer.user;
+        const node = "node-"+quer.node;
+        
+        const patient = await patientModel.find({user: user, devtoken: dev_token});
+        const check = (patient == []);
+      
+        if (!check){    
+            const valtoken = patient[0].devtoken;
+            const valuser = patient[0].user;
+             
+            if ((valtoken == dev_token) && (valuser == user)){
+
+                const devarr = patient[0].devices;
+                
+                for(i=0; i<10; i++){
+                    if (devarr[i].node == node){
+                        return res.json ({node: devarr[i].node, attribute: devarr[i].attribute});
+                    }
+                }
+                return res.json ({message: "Node not Found"});            
+            }          
+        }     
+    } 
+    catch(error) {
+        if (error.message == "Cannot read property 'node' of undefined"){
+            return res.status(500).json ({message: "Node not Found"});  
+        }
         return res.status(500).json({error: error.message});
     }
        
@@ -251,7 +314,7 @@ app.get("/data", async (req, res) => {
         const patient = await patientModel.find({user: user});
         
         if (!patient){
-            return res.json ({message: "No Data Found"});
+            return res.status(500).json ({message: "No Data Found"});
         }
         else{
             const valpass = patient[0].pass;
@@ -266,7 +329,7 @@ app.get("/data", async (req, res) => {
               return res.json ({ patient });
             }
             else{
-              return res.json ({message: "Token does not match. Try to Login Again."});
+              return res.status(500).json ({message: "Token does not match. Try to Login Again."});
             }
         }    
     }
@@ -383,6 +446,43 @@ app.delete("/patient/delete/:_id", async (req, res) => {
         const { _id } = req.params;
         await patientModel.findByIdAndDelete(_id);
         return res.json({message: "Patient Deleted 🔪"});
+    }
+    catch(error){
+        return res.status(500).json({error: error.message});
+    }
+    
+});
+
+
+// DELETE
+// route: /node/delete
+// description: To delete a node device of a user
+// q-parameter: user, dev_token, node-ID
+app.delete("/node/delete", async (req, res) => {
+    try{
+        const quer = req.query;
+        const dev_token = quer.token;
+        const user = quer.user;
+        const node = quer.node;
+
+        const patient = await patientModel.find({user: user, devtoken: dev_token});
+        const check = (patient == []);
+      
+        if (!check){    
+            const valtoken = patient[0].devtoken;
+            const valuser = patient[0].user;   
+            
+            if ((valtoken == dev_token) && (valuser == user)){
+                
+                const filter = { user: user };
+                const updatepatient = await patientModel.findOneAndUpdate(
+                    filter,
+                    { $pull: { devices: { $gte: {node: node} } }}    
+                );
+                
+                return res.json ({message: "Node Deleted 🔪"});            
+            }          
+        }
     }
     catch(error){
         return res.status(500).json({error: error.message});
