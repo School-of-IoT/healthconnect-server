@@ -279,7 +279,7 @@ app.get("/node/device", async (req, res) => {
         }
 
         // Return node and attribute if found
-        return res.json({ node: device.node, attribute: device.attribute });
+        return res.json({ node: device.node, type: device.type, attribute: device.attribute, lastUp: device.lastUp });
 
     } catch (error) {
         return res.status(500).json({ error: error.message });
