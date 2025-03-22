@@ -255,42 +255,37 @@ app.post("/node/create", async (req, res) => {
 // description: To view node-xxxxxxx and attributes to be stored and used for data-exchange
 // q-parameter: user, dev_token & node-xxxxxxxx
 app.get("/node/device", async (req, res) => {
-
     try {
-    
-        const quer = req.query;
-        const dev_token = quer.token;
-        const user = quer.user;
-        const node = "node-"+quer.node;
-        
-        const patient = await patientModel.find({user: user, devtoken: dev_token});
-        const check = (patient == []);
-      
-        if (!check){    
-            const valtoken = patient[0].devtoken;
-            const valuser = patient[0].user;
-             
-            if ((valtoken == dev_token) && (valuser == user)){
+        const { token: dev_token, user, node } = req.query;
+        const nodeId = `node-${node}`;
 
-                const devarr = patient[0].devices;
-                
-                for(i=0; i<10; i++){
-                    if (devarr[i].node == node){
-                        return res.json ({node: devarr[i].node, attribute: devarr[i].attribute});
-                    }
-                }
-                return res.json ({message: "Node not Found"});            
-            }          
-        }     
-    } 
-    catch(error) {
-        if (error.message == "Cannot read property 'node' of undefined"){
-            return res.status(500).json ({message: "Node not Found"});  
+        // Validate input
+        if (!dev_token || !user || !node) {
+        return res.status(400).json({ error: "Missing required query parameters: token, user, or node" });
         }
-        return res.status(500).json({error: error.message});
+
+        // Find the patient using token and user
+        const patient = await patientModel.findOne({ user, devtoken: dev_token });
+
+        if (!patient) {
+        return res.status(404).json({ message: "Patient not found" });
+        }
+
+        // Find the device using array filter
+        const device = patient.devices.find((d) => d.node === nodeId);
+
+        if (!device) {
+        return res.status(404).json({ message: "Node not found" });
+        }
+
+        // Return node and attribute if found
+        return res.json({ node: device.node, attribute: device.attribute });
+
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
     }
-       
-});
+    });
+  
 
 
 // GET
@@ -483,9 +478,9 @@ app.delete("/node/delete", async (req, res) => {
 });
 
 //Handle all other requests on the server unmatched with above requests
-app.get('*', function(req, res){
-    res.sendFile(__dirname+'/404.html');
-    });
+app.get('*', function(req, res) {
+  res.status(404).sendFile(__dirname + '/404.html');
+});
 
 //Connecting server to database
 const PORT = process.env.PORT || 3000;
