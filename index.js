@@ -222,40 +222,32 @@ app.get("/devtkn/device", async (req, res) => {
                 // }
 
 app.post("/node/create", async (req, res) => {
-
     try {
-    
-        const quer = req.query;
-        const dev_token = quer.token;
-        const user = quer.user;
+        const { token: dev_token, user } = req.query;
         const { nodeData } = req.body;
-        
-        const patient = await patientModel.find({user: user, devtoken: dev_token});
-        const check = (patient == []);
-      
-        if (!check){    
-            const valtoken = patient[0].devtoken;
-            const valuser = patient[0].user;   
-            
-            if ((valtoken == dev_token) && (valuser == user)){
-                
-                const filter = { user: user };
-                const updatepatient = await patientModel.findOneAndUpdate(
-                    filter,
-                    { $push: nodeData},
-                    { new: true}     
-                );
-
-                
-                return res.json ({message: "Node Created 🎆"});            
-            }          
-        }     
-    } 
-    catch(error) {
-        return res.status(500).json({error: error.message});
+    
+        if (!nodeData || !nodeData.devices || !nodeData.devices.node || !nodeData.devices.type || !nodeData.devices.attribute || !nodeData.devices.lastUp) {
+        return res.status(400).json({ error: "Invalid nodeData. Please provide all required device fields." });
+        }
+    
+        const patient = await patientModel.findOne({ user, devtoken: dev_token });
+    
+        if (!patient) {
+        return res.status(404).json({ error: "Patient not found" });
+        }
+    
+        await patientModel.findOneAndUpdate(
+        { user },
+        { $push: { devices: nodeData.devices } },
+        { new: true }
+        );
+    
+        return res.json({ message: "Node Created 🎆" });
+    
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
     }
-       
-});
+    });
 
 
 // GET
