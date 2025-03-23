@@ -144,7 +144,7 @@ Request Body -
       "DecreasedMood": false,
       "FiO2": 78,
       "GeneralizedFatigue": false,
-      "HeartRate": 65,
+      "HRV": 65,
       "HistoryFever": "Yes",
       "RR": 20,
       "RecentHospitalStay": "05/04/2019",

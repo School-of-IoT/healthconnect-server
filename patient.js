@@ -1,6 +1,18 @@
 const mongoose = require('mongoose');
 
-// Define a strict schema for devices
+// Define a schema for tracking attributes with a date
+const attributeSchema = new mongoose.Schema({
+  date: {
+    type: Date,
+    required: true
+  },
+  value: {
+    type: Number,
+    required: true
+  }
+}, { _id: false });
+
+// Define the device schema
 const deviceSchema = new mongoose.Schema({
   node: {
     type: String,
@@ -17,10 +29,30 @@ const deviceSchema = new mongoose.Schema({
   lastUp: {
     type: String,
     required: true
+  },
+  battery: {
+    type: String,
+    required: true
   }
-}, { _id: false, strict: true });
+}, { _id: false });
 
-// Main schema with embedded devices
+// Health Data Schema
+const healthDataSchema = new mongoose.Schema({
+  ECG: { type: [attributeSchema], default: [] },
+  SBP: { type: [attributeSchema], default: [] },
+  RR: { type: [attributeSchema], default: [] },
+  HRV: { type: [attributeSchema], default: [] },
+  DBP: { type: [attributeSchema], default: [] },
+  FiO2: { type: [attributeSchema], default: [] },
+  SpO2: { type: [attributeSchema], default: [] },
+  Temp: { type: [attributeSchema], default: [] },
+  StepCount: { type: [attributeSchema], default: [] },
+  Water: { type: [attributeSchema], default: [] },
+  sleepHours: { type: [attributeSchema], default: [] },
+  BPM: { type: [attributeSchema], default: [] }
+}, { _id: false });
+
+// Main schema for the patient
 const patientSchema = new mongoose.Schema({
   Name: String,
   Address: String,
@@ -31,17 +63,10 @@ const patientSchema = new mongoose.Schema({
   BMI: Number,
   Chills: Boolean,
   Contacts: String,
-  DBP: Number,
   DecreasedMood: Boolean,
-  FiO2: Number,
   GeneralizedFatigue: Boolean,
-  HeartRate: Number,
   HistoryFever: String,
-  RR: Number,
   RecentHospitalStay: String,
-  SBP: Number,
-  SpO2: Number,
-  Temp: Number,
   WeightGain: Number,
   WeightLoss: Number,
   BGroup: String,
@@ -53,8 +78,11 @@ const patientSchema = new mongoose.Schema({
     type: [deviceSchema],
     default: []
   },
-  ecg: [{}]
-}, { strict: true }); // Prevents adding unexpected fields
+  healthData: {
+    type: healthDataSchema,
+    default: () => ({})
+  }
+}, { strict: true });
 
 const patientModel = mongoose.model("Patient_Data", patientSchema);
 

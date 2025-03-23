@@ -208,19 +208,17 @@ app.get("/devtkn/device", async (req, res) => {
 // description: To create NEW node device, node-xxxxxxx to be stored and used for data-exchange
 // q-parameter: user & dev_token
 // body: 
-
-                // {
-                //     "nodeData":{
-                //         "devices":
-                //           { 
-                //             "node": "node-xxxxxx",
-                //             "type": "xxxxxx",
-                //             "attribute": "xxxx", 
-                //             "lastUp": "xx/xx/xx"
-                //           }
-                //     }
-                // }
-
+// {
+//     "nodeData":{
+//         "devices":
+//           { 
+//             "node": "node-xxxxxx",
+//             "type": "xxxxxx",
+//             "attribute": "xxxx", 
+//             "lastUp": "xx/xx/xx"
+//           }
+//     }
+// }
 app.post("/node/create", async (req, res) => {
     try {
         const { token: dev_token, user } = req.query;
@@ -279,13 +277,95 @@ app.get("/node/device", async (req, res) => {
         }
 
         // Return node and attribute if found
-        return res.json({ node: device.node, type: device.type, attribute: device.attribute, lastUp: device.lastUp });
+        return res.json({ node: device.node, type: device.type, attribute: device.attribute, lastUp: device.lastUp, battery: device.battery });
 
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
     });
+
+
+// PUT
+// route: /node/update_health
+// description: Update health attributes (StepCount, Water, sleepHours, BPM)
+// q-parameter: user, dev_token
+// request body: healthData object
+app.put("/node/update_health", async (req, res) => {
+    try {
+        const { user, token: dev_token } = req.query;
+        const { healthData } = req.body;
+    
+        if (!healthData || Object.keys(healthData).length === 0) {
+        return res.status(400).json({ error: "Invalid or empty health data" });
+        }
+    
+        const patient = await patientModel.findOne({ user, devtoken: dev_token });
+    
+        if (!patient) {
+        return res.status(404).json({ error: "Patient not found" });
+        }
+    
+        // Update healthData
+        Object.keys(healthData).forEach((key) => {
+        if (Array.isArray(healthData[key])) {
+            healthData[key].forEach((item) => {
+            if (!item.date || item.value === undefined) {
+                throw new Error(`Invalid data for ${key}. Each entry must have 'date' and 'value'.`);
+            }
+            patient.healthData[key].push(item);
+            });
+        }
+        });
+    
+        const updatedPatient = await patient.save();
+        return res.json({ patient: updatedPatient });
+    
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+    });
+
+// PUT
+// route: /patient/update-health/:_id
+// description: Update health attributes (StepCount, Water, sleepHours, BPM)
+// e-parameter: _id 
+// request body: healthData object
+app.put("/patient/update-health/:_id", async (req, res) => {
+    try {
+      const { _id } = req.params;
+      const { healthData } = req.body;
   
+      if (!healthData || Object.keys(healthData).length === 0) {
+        return res.status(400).json({ error: "Invalid or empty health data" });
+      }
+  
+      const patient = await patientModel.findById(_id);
+  
+      if (!patient) {
+        return res.status(404).json({ error: "Patient not found" });
+      }
+  
+      // Update healthData
+      Object.keys(healthData).forEach((key) => {
+        if (Array.isArray(healthData[key])) {
+          healthData[key].forEach((item) => {
+            if (!item.date || item.value === undefined) {
+              throw new Error(`Invalid data for ${key}. Each entry must have 'date' and 'value'.`);
+            }
+            patient.healthData[key].push(item);
+          });
+        }
+      });
+  
+      const updatedPatient = await patient.save();
+      return res.json({ patient: updatedPatient });
+  
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  });
+
+
 
 
 // GET
