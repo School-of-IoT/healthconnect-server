@@ -286,54 +286,52 @@ app.get("/node/device", async (req, res) => {
 
 
 // PUT
-// route: /node/update-health
+// route: /health/update
 // description: Update health attributes (StepCount, Water, sleepHours, BPM)
 // q-parameter: user, dev_token
 // request body: healthData object
-app.put("/node/update-health", async (req, res) => {
+app.put("/health/update", async (req, res) => {
     try {
-      const { user, token } = req.query;
-      const { healthData } = req.body;
-  
-      if (!user || !token) {
-        return res.status(400).json({ error: "User and token are required." });
-      }
-  
-      if (!healthData || Object.keys(healthData).length === 0) {
-        return res.status(400).json({ error: "Invalid or empty health data" });
-      }
-  
-      const patient = await patientModel.findOne({ user, devtoken: token });
-  
-      if (!patient) {
-        return res.status(404).json({ error: "Patient not found" });
-      }
-  
-      // Initialize healthData if not present
-      if (!patient.healthData) {
-        patient.healthData = {};
-      }
-  
-      // Update healthData safely without triggering other validations
-      Object.keys(healthData).forEach((key) => {
-        if (!patient.healthData[key]) {
-          patient.healthData[key] = [];
+        const { user, token: dev_token } = req.query;
+        const { healthData } = req.body;
+    
+        if (!healthData || Object.keys(healthData).length === 0) {
+          return res.status(400).json({ error: "Invalid or empty health data" });
         }
-        healthData[key].forEach((item) => {
-          if (!item.date || item.value === undefined) {
-            throw new Error(`Invalid data for ${key}. Each entry must have 'date' and 'value'.`);
+    
+        const patient = await patientModel.findOne({ user, devtoken: dev_token });
+    
+        if (!patient) {
+          return res.status(404).json({ error: "Patient not found or token invalid" });
+        }
+    
+        // Prepare the update payload
+        const updatePayload = {};
+        Object.keys(healthData).forEach((key) => {
+          if (Array.isArray(healthData[key])) {
+            healthData[key].forEach((item) => {
+              if (!item.date || item.value === undefined) {
+                throw new Error(`Invalid data for ${key}. Each entry must have 'date' and 'value'.`);
+              }
+              updatePayload[`healthData.${key}`] = updatePayload[`healthData.${key}`] || [];
+              updatePayload[`healthData.${key}`].push(item);
+            });
           }
-          patient.healthData[key].push(item);
         });
-      });
-  
-      const updatedPatient = await patient.save();
-      return res.json({ patient: updatedPatient });
-  
-    } catch (error) {
-      return res.status(500).json({ error: error.message });
-    }
-  });
+    
+        // Update without device schema validation
+        const updatedPatient = await patientModel.findOneAndUpdate(
+          { user, devtoken: dev_token },
+          { $set: updatePayload },
+          { new: true }
+        );
+    
+        return res.json({ message: "Health Updated 💙" });
+
+      } catch (error) {
+        return res.status(500).json({ error: error.message });
+      }
+    });
 
 // PUT
 // route: /patient/update-health/:_id
