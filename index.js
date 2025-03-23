@@ -434,7 +434,7 @@ app.post("/node/create", async (req, res) => {
         const { token: dev_token, user } = req.query;
         const { nodeData } = req.body;
     
-        if (!nodeData || !nodeData.devices || !nodeData.devices.node || !nodeData.devices.type || !nodeData.devices.attribute || !nodeData.devices.lastUp) {
+        if (!nodeData || !nodeData.devices || !nodeData.devices.node || !nodeData.devices.type || !nodeData.devices.attribute) {
         return res.status(400).json({ error: "Invalid nodeData. Please provide all required device fields." });
         }
     
