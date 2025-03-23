@@ -80,7 +80,7 @@ Example - https://healthconnect-server.onrender.com/geo_locate/elon
 }
 ```
 
-### 4. Request JIT token with 'user' & 'pass'
+### 4. Login Request for JIT token with 'user' & 'pass'
 
 `GET` - `/login?user=<user>&pass=<pass>`
 ```
@@ -123,7 +123,7 @@ Example - https://healthconnect-server.onrender.com/data?user=elon&token=xxxxxxx
 
 `POST` - `/patient/signup`
 ```
-Description: To create new patient - Using schema model, add new entry on mongoDB
+Description: To create new patient - Using user and pass is required.
 Request: JSON Body with Patient Information
 Response: Patient Created
 ```
@@ -133,26 +133,9 @@ Request Body -
   "newpatient": {
       "Name": "Axxxxxa",
       "Email": "abc@gog.com",
-      "DOB": "1/12/1999"
+      "DOB": "1/12/1999",
       "Address": "xxxxxx",
-      "Age": 21,
-      "Ambulation": false,
-      "BMI": 24.7,
-      "Chills": false,
       "Contacts": "8xxxxxx828",
-      "DBP": 74,
-      "DecreasedMood": false,
-      "FiO2": 78,
-      "GeneralizedFatigue": false,
-      "HRV": 65,
-      "HistoryFever": "Yes",
-      "RR": 20,
-      "RecentHospitalStay": "05/04/2019",
-      "SBP": 78,
-      "SpO2": 95,
-      "Temp": 37,
-      "WeightGain": 5,
-      "WeightLoss": 0,
       "BGroup": "O+",
       "Sex": "Male",
       "pass": "xxxx",
@@ -181,25 +164,58 @@ Request Body -
 ```json
 {
     "patientData":{
-        "SBP":	78
+        "BMI":	78
     }
 }
 ```
 Response - 
 ```json
 {
-  "patient": 
-  {
-      "_id": "2cdgdxxxxxxxxxxxx83da84",
-      "Name": "Elon Musk",
-      "Address": "Texas",
-      "Age": 24,
-      "SBP":	78
-    }
+  "message": "Patient Data updated!"
 }
 ```
 
-### 8. Delete Patient Account with 'ID'
+### 8. Update Patient's Health data with 'ID'
+
+`PUT` - `/patient/update-health/<id>`
+```
+Description: To Update a Patient Health Data
+Parameter: ID - Patient's unique ID after login
+Request: JSON Body with new data
+```
+Request Body -
+```json
+{
+  "healthData": {
+    "StepCount": [
+      {
+        "date": "2025-03-23T08:00:00Z",
+        "value": 5000
+      },
+      {
+        "date": "2025-03-22T09:00:00Z",
+        "value": 6000
+      }
+    ],
+    "Water": [
+      {
+        "date": "2025-03-23T10:00:00Z",
+        "value": 2
+      }
+    ]
+  }
+}
+
+```
+Response - 
+```json
+{
+  "message": "Health Updated 💙"
+}
+```
+
+
+### 9. Delete Patient Account with 'ID'
 
 `DELETE` - `/patient/delete/<id>`
 ```
@@ -213,7 +229,7 @@ Response -
 }
 ```
 
-### 9. Generate New Device Token
+### 10. Generate New Device Token
 
 `GET` - `/devtkn/create?user=<user>&pass=<pass>`
 ```
@@ -228,7 +244,7 @@ Response -
 }
 ```
 
-### 10. Request MQTT server Info (On Portal)
+### 11. Request MQTT server Info (On Portal)
 
 `GET` - `/devtkn/portal?user=<user>&token=<session_token>`
 ```
@@ -244,7 +260,7 @@ Response -
 }
 ```
 
-### 11. Request MQTT server Info (On Device)
+### 12. Request MQTT server Info (On Device)
 
 `GET` - `/devtkn/device?user=<user>&token=<dev_token>`
 ```
@@ -260,7 +276,7 @@ Response -
 }
 ```
 
-### 12. Generate New Device Node
+### 13. Create New Device Node
 
 `POST` - `/node/create?user=<user>&token=<dev_token>`
 ```
@@ -275,11 +291,10 @@ Request Body -
   "nodeData":
     {
       "devices":
-        { 
-          "node": "node-xxxxxx",
-          "type": "xxxxxx",
-          "attribute": "xxxx, xxxx", 
-          "lastUp": "xx/xx/xx"
+       {
+          "node": "node-XXXXXXXX",
+          "type": "xxxxx",
+          "attribute": "sbp"
         }
     }
 }
@@ -291,7 +306,7 @@ Response -
 }
 ```
 
-### 13. Get Device Node Information
+### 14. Get Device Node Information
 
 `GET` - `/node/device?user=<user>&token=<dev_token>&node=<device_id>`
 ```
@@ -307,9 +322,48 @@ Response -
 }
 ```
 
-### 14. Delete Device Node
+### 15. Update Patient's Health data 
 
-`DELETR` - `/node/delete?user=<user>&token=<dev_token>&node=<device_id>`
+`PUT` - `/update/health`
+```
+Description: To Update a Patient Health Data with device token
+Parameter: user & dev_token
+Request: JSON Body with new data
+```
+Request Body -
+```json
+{
+  "healthData": {
+    "StepCount": [
+      {
+        "date": "2025-03-23T08:00:00Z",
+        "value": 5000
+      },
+      {
+        "date": "2025-03-22T09:00:00Z",
+        "value": 6000
+      }
+    ],
+    "Water": [
+      {
+        "date": "2025-03-23T10:00:00Z",
+        "value": 2
+      }
+    ]
+  }
+}
+
+```
+Response - 
+```json
+{
+  "message": "Health Updated 💙"
+}
+```
+
+### 16. Delete Device Node
+
+`DELETE` - `/node/delete?user=<user>&token=<dev_token>&node=<device_id>`
 ```
 Description: To delete Node Data
 Parameter: user, dev_token & node device
