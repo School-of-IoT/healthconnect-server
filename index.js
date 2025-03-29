@@ -7,7 +7,6 @@ const patientModel = require("./patient");
 const admin = require('firebase-admin');
 
 // Firebase Admin initialization
-const serviceAccount = require("./healthconnect-app-firebase-adminsdk.json");
 admin.initializeApp({
     credential: admin.credential.cert({
       type: process.env.FIREBASE_TYPE,
