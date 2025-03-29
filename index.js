@@ -313,7 +313,7 @@ app.get("/med-data", async (req, res) => {
             return res.status(404).json({ message: "No patient data found" });
         }
 
-        res.status(200).json({ patient });
+        return res.json ({ patient });
     } catch (error) {
         console.error("Error fetching patient data:", error);
         return res.status(500).json({ message: error.message });
