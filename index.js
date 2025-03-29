@@ -4,15 +4,18 @@ require("dotenv").config();
 const express = require("express");
 const connectDB = require("./connection");
 const patientModel = require("./patient");
+const admin = require('firebase-admin');
 
+// Firebase Admin initialization
+const serviceAccount = require("./healthconnect-app-firebase-adminsdk.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 
 //secret handling
 const secret = process.env.CRYPTO_SECRET;
-
 const adminkey = process.env.ADMINKEY;
-
-
 const crypto = require("crypto").createHmac;
 
 const app = express();
@@ -278,6 +281,34 @@ app.put("/patient/update-health/:_id", async (req, res) => {
     }
   });
 
+app.get("/med-data", async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+
+    try {
+        // Verify Firebase Token
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        const userEmail = decodedToken.email;
+        if (!userEmail) {
+            return res.status(400).json({ message: "Email not found in token" });
+        }
+      
+        // Fetch Patient Data Using Email
+        const patient = await patientModel.findOne({ Email: userEmail });
+
+        if (!patient) {
+            return res.status(404).json({ message: "No patient data found" });
+        }
+
+        res.status(200).json({ patient });
+    } catch (error) {
+        console.error("Error fetching patient data:", error);
+        return res.status(500).json({ message: error.message });
+    }
+    });
   
 
 // DELETE
