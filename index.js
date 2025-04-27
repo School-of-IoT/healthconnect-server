@@ -352,8 +352,8 @@ app.get("/med-data", async (req, res) => {
             fromDate = new Date();
             fromDate.setDate(toDate.getDate() - 7);
 
-            fromDate.setHours(0, 0, 0, 0); // Start of the day
-            toDate.setHours(23, 59, 59, 999); // End of the day
+            fromDate.setHours(0, 0, 0, 0);
+            toDate.setHours(23, 59, 59, 999);
         } else if (from && to) {
             fromDate = new Date(from);
             toDate = new Date(to);
@@ -361,6 +361,11 @@ app.get("/med-data", async (req, res) => {
             fromDate.setHours(0, 0, 0, 0);
             toDate.setHours(23, 59, 59, 999);
         }
+
+        console.log("Incoming Query:", { from, to, q });
+        console.log("Patient Health Data before filtering:", JSON.stringify(healthData, null, 2));
+        console.log("From Date:", fromDate);
+        console.log("To Date:", toDate);
 
         if (fromDate && toDate) {
             const filterByDate = (dataArray) => {
@@ -375,12 +380,23 @@ app.get("/med-data", async (req, res) => {
                 }
             };
 
-            Object.keys(healthData).forEach(key => {
-                healthData[key] = filterByDate(healthData[key]);
-            });
-        }
+            // Now deep filter every field
+            const filteredHealthData = {};
 
-        return res.json({ healthData });
+            Object.keys(healthData).forEach(key => {
+                const filteredArray = filterByDate(healthData[key]);
+                if (filteredArray.length > 0) {
+                    filteredHealthData[key] = filteredArray;
+                }
+            });
+
+            console.log("Filtered Health Data:", JSON.stringify(filteredHealthData, null, 2));
+
+            return res.json({ healthData: filteredHealthData });
+        } else {
+            // No date filtering needed
+            return res.json({ healthData });
+        }
         
     } catch (error) {
         console.error("Error fetching patient data:", error);
