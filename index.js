@@ -4,15 +4,28 @@ require("dotenv").config();
 const express = require("express");
 const connectDB = require("./connection");
 const patientModel = require("./patient");
+const admin = require('firebase-admin');
 
+// Firebase Admin initialization
+admin.initializeApp({
+    credential: admin.credential.cert({
+      type: process.env.FIREBASE_TYPE,
+      project_id: process.env.FIREBASE_PROJECT_ID,
+      private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      client_email: process.env.FIREBASE_CLIENT_EMAIL,
+      client_id: process.env.FIREBASE_CLIENT_ID,
+      auth_uri: process.env.FIREBASE_AUTH_URI,
+      token_uri: process.env.FIREBASE_TOKEN_URI,
+      auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
+      client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
+      universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN
+    })
+  });
 
 
 //secret handling
 const secret = process.env.CRYPTO_SECRET;
-
 const adminkey = process.env.ADMINKEY;
-
-
 const crypto = require("crypto").createHmac;
 
 const app = express();
@@ -20,7 +33,7 @@ const app = express();
 //Important Headers for public uses
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   res.header("Access-Control-Allow-Methods", "*");
   next();
 });
@@ -278,7 +291,96 @@ app.put("/patient/update-health/:_id", async (req, res) => {
     }
   });
 
+// app.get("/med-data", async (req, res) => {
+//     const token = req.headers.authorization?.split(' ')[1];
+
+//     if (!token) {
+//         return res.status(401).json({ message: "No token provided" });
+//     }
+
+//     try {
+//         // Verify Firebase Token
+//         const decodedToken = await admin.auth().verifyIdToken(token);
+//         const userEmail = decodedToken.email;
+//         if (!userEmail) {
+//             return res.status(400).json({ message: "Email not found in token" });
+//         }
+      
+//         // Fetch Patient Data Using Email
+//         const patient = await patientModel.findOne({ Email: userEmail });
+
+//         if (!patient) {
+//             return res.status(404).json({ message: "No patient data found" });
+//         }
+
+//         return res.json ({ patient });
+//     } catch (error) {
+//         console.error("Error fetching patient data:", error);
+//         return res.status(500).json({ message: error.message });
+//     }
+//     });
   
+
+app.get("/med-data", async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+
+    try {
+        // Verify Firebase Token
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        const userEmail = decodedToken.email;
+        if (!userEmail) {
+            return res.status(400).json({ message: "Email not found in token" });
+        }
+      
+        // Fetch Patient Data Using Email
+        const patient = await patientModel.findOne({ Email: userEmail });
+
+        if (!patient) {
+            return res.status(404).json({ message: "No patient data found" });
+        }
+
+        let healthData = patient.healthData || {};
+
+        const { from, to, q } = req.query;
+
+        let fromDate, toDate;
+        
+        if (q === "dashboard") {
+            toDate = new Date();
+            fromDate = new Date();
+            fromDate.setDate(toDate.getDate() - 7);
+        } else if (from && to) {
+            fromDate = new Date(from);
+            toDate = new Date(to);
+        }
+
+        if (fromDate && toDate) {
+            // Filter each attribute array by date range
+            const filterByDate = (dataArray) => {
+                return dataArray.filter(entry => {
+                    const entryDate = new Date(entry.date);
+                    return entryDate >= fromDate && entryDate <= toDate;
+                });
+            };
+
+            // Apply the filter to each health metric
+            Object.keys(healthData).forEach(key => {
+                healthData[key] = filterByDate(healthData[key]);
+            });
+        }
+
+        return res.json({ healthData });
+        
+    } catch (error) {
+        console.error("Error fetching patient data:", error);
+        return res.status(500).json({ message: error.message });
+    }
+});
+
 
 // DELETE
 // route: /patient/delete/:_id
