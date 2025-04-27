@@ -323,86 +323,75 @@ app.put("/patient/update-health/:_id", async (req, res) => {
 
 app.get("/med-data", async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
-
+  
     if (!token) {
-        return res.status(401).json({ message: "No token provided" });
+      return res.status(401).json({ message: "No token provided" });
     }
-
+  
     try {
-        const decodedToken = await admin.auth().verifyIdToken(token);
-        const userEmail = decodedToken.email;
-        if (!userEmail) {
-            return res.status(400).json({ message: "Email not found in token" });
-        }
-      
-        const patient = await patientModel.findOne({ Email: userEmail });
-
-        if (!patient) {
-            return res.status(404).json({ message: "No patient data found" });
-        }
-
-        let healthData = patient.healthData || {};
-
-        const { from, to, q } = req.query;
-
-        let fromDate, toDate;
-        
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      const userEmail = decodedToken.email;
+  
+      if (!userEmail) {
+        return res.status(400).json({ message: "Email not found in token" });
+      }
+  
+      const patient = await patientModel.findOne({ Email: userEmail });
+  
+      if (!patient) {
+        return res.status(404).json({ message: "No patient data found" });
+      }
+  
+      const { from, to, q } = req.query;
+      console.log("Incoming Query:", { from, to, q });
+  
+      let fromDate, toDate;
+  
         if (q === "dashboard") {
-            toDate = new Date();
-            fromDate = new Date();
-            fromDate.setDate(toDate.getDate() - 7);
-
-            fromDate.setHours(0, 0, 0, 0);
-            toDate.setHours(23, 59, 59, 999);
-        } else if (from && to) {
-            fromDate = new Date(from);
-            toDate = new Date(to);
-
-            fromDate.setHours(0, 0, 0, 0);
-            toDate.setHours(23, 59, 59, 999);
-        }
-
-        console.log("Incoming Query:", { from, to, q });
-        console.log("Patient Health Data before filtering:", JSON.stringify(healthData, null, 2));
+        toDate = new Date();
+        fromDate = new Date();
+        fromDate.setDate(toDate.getDate() - 7);
+      } else if (from && to) {
+        fromDate = new Date(from);
+        toDate = new Date(to);
+      }
+  
+      if (fromDate && toDate) {
         console.log("From Date:", fromDate);
         console.log("To Date:", toDate);
-
-        if (fromDate && toDate) {
-            const filterByDate = (dataArray) => {
-                if (Array.isArray(dataArray)) {
-                    return dataArray.filter(entry => {
-                        if (!entry.date) return false;
-                        const entryDate = new Date(entry.date);
-                        return entryDate >= fromDate && entryDate <= toDate;
-                    });
-                } else {
-                    return [];
-                }
-            };
-
-            // Now deep filter every field
-            const filteredHealthData = {};
-
-            Object.keys(healthData).forEach(key => {
-                const filteredArray = filterByDate(healthData[key]);
-                if (filteredArray.length > 0) {
-                    filteredHealthData[key] = filteredArray;
-                }
+  
+        const filteredHealthData = {};
+  
+        const healthData = patient.healthData || {};
+  
+        for (const key in healthData) {
+          if (Array.isArray(healthData[key])) {
+            filteredHealthData[key] = healthData[key].filter(item => {
+              const itemDate = new Date(item.date);
+              return itemDate >= fromDate && itemDate <= toDate;
             });
-
-            console.log("Filtered Health Data:", JSON.stringify(filteredHealthData, null, 2));
-
-            return res.json({ healthData: filteredHealthData });
-        } else {
-            // No date filtering needed
-            return res.json({ healthData });
+          }
         }
-        
+  
+        console.log("Filtered Health Data:", filteredHealthData);
+  
+        // Now return the WHOLE patient data, but healthData replaced with filteredHealthData
+        const filteredPatient = {
+          ...patient.toObject(),  // convert mongoose document to plain object
+          healthData: filteredHealthData
+        };
+  
+        return res.json({ patient: [filteredPatient] });
+      } else {
+        // No filtering, send full patient
+        return res.json({ patient: [patient] });
+      }
+  
     } catch (error) {
-        console.error("Error fetching patient data:", error);
-        return res.status(500).json({ message: error.message });
+      console.error("Error fetching patient data:", error);
+      return res.status(500).json({ message: error.message });
     }
-});
+  });
 
 
 // DELETE
