@@ -329,14 +329,12 @@ app.get("/med-data", async (req, res) => {
     }
 
     try {
-        // Verify Firebase Token
         const decodedToken = await admin.auth().verifyIdToken(token);
         const userEmail = decodedToken.email;
         if (!userEmail) {
             return res.status(400).json({ message: "Email not found in token" });
         }
       
-        // Fetch Patient Data Using Email
         const patient = await patientModel.findOne({ Email: userEmail });
 
         if (!patient) {
@@ -359,15 +357,17 @@ app.get("/med-data", async (req, res) => {
         }
 
         if (fromDate && toDate) {
-            // Filter each attribute array by date range
             const filterByDate = (dataArray) => {
-                return dataArray.filter(entry => {
-                    const entryDate = new Date(entry.date);
-                    return entryDate >= fromDate && entryDate <= toDate;
-                });
+                if (Array.isArray(dataArray)) {
+                    return dataArray.filter(entry => {
+                        const entryDate = new Date(entry.date);
+                        return entryDate >= fromDate && entryDate <= toDate;
+                    });
+                } else {
+                    return [];
+                }
             };
 
-            // Apply the filter to each health metric
             Object.keys(healthData).forEach(key => {
                 healthData[key] = filterByDate(healthData[key]);
             });
