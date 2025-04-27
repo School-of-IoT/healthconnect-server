@@ -343,7 +343,7 @@ app.get("/med-data", async (req, res) => {
       }
   
       const { from, to, q } = req.query;
-      console.log("Incoming Query:", { from, to, q });
+    //   console.log("Incoming Query:", { from, to, q });
   
       let fromDate, toDate;
   
@@ -357,34 +357,28 @@ app.get("/med-data", async (req, res) => {
       }
   
       if (fromDate && toDate) {
-        console.log("From Date:", fromDate);
-        console.log("To Date:", toDate);
-  
-        const filteredHealthData = {};
-  
+        // console.log("From Date:", fromDate);
+        // console.log("To Date:", toDate);
+
+        const health = {};
         const healthData = patient.healthData || {};
   
         for (const key in healthData) {
           if (Array.isArray(healthData[key])) {
-            filteredHealthData[key] = healthData[key].filter(item => {
+            health[key] = healthData[key].filter(item => {
               const itemDate = new Date(item.date);
               return itemDate >= fromDate && itemDate <= toDate;
             });
           }
         }
   
-        console.log("Filtered Health Data:", filteredHealthData);
+        // console.log("Filtered Health Data:", health);
+
   
-        // Now return the WHOLE patient data, but healthData replaced with filteredHealthData
-        const filteredPatient = {
-          ...patient.toObject(),  // convert mongoose document to plain object
-          healthData: filteredHealthData
-        };
-  
-        return res.json({ patient: [filteredPatient] });
+        return res.json({ health});
       } else {
-        // No filtering, send full patient
-        return res.json({ patient: [patient] });
+        // No filtering
+        return res.status(201).json({  message: "No data found" });
       }
   
     } catch (error) {
