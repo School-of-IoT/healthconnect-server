@@ -372,10 +372,10 @@ app.get("/med-data", async (req, res) => {
           }
         }
   
-        // console.log("Filtered Health Data:", health);
+        console.log("Filtered Health Data:", health);
 
   
-        return res.json({ health});
+        return res.json(health);
       } else {
         // No filtering
         return res.status(201).json({  message: "No data found" });
