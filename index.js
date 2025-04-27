@@ -351,15 +351,22 @@ app.get("/med-data", async (req, res) => {
             toDate = new Date();
             fromDate = new Date();
             fromDate.setDate(toDate.getDate() - 7);
+
+            fromDate.setHours(0, 0, 0, 0); // Start of the day
+            toDate.setHours(23, 59, 59, 999); // End of the day
         } else if (from && to) {
             fromDate = new Date(from);
             toDate = new Date(to);
+
+            fromDate.setHours(0, 0, 0, 0);
+            toDate.setHours(23, 59, 59, 999);
         }
 
         if (fromDate && toDate) {
             const filterByDate = (dataArray) => {
                 if (Array.isArray(dataArray)) {
                     return dataArray.filter(entry => {
+                        if (!entry.date) return false;
                         const entryDate = new Date(entry.date);
                         return entryDate >= fromDate && entryDate <= toDate;
                     });
