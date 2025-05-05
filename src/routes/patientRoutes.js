@@ -2,11 +2,11 @@ const express = require("express");
 
 const app = express();
 
-import {
+const {
   viewAdmin,
   fetchPatientData_ID,
   getGeoAPI
-} from '../controllers/patientControl.js';
+} = require('../controllers/patientControl');
 
 const patientRoutes = express.Router();
 
