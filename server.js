@@ -1,4 +1,5 @@
-require("dotenv").config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 const patientRoutes = require('./src/routes/patientRoutes');
 const v1Route = require('./index');
