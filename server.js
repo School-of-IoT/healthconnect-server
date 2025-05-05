@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const patientRoutes = require('./routes/patientRoutes');
+const patientRoutes = require('./src/routes/patientRoutes');
 const v1Route = require('./index');
 
 const express = require("express");
