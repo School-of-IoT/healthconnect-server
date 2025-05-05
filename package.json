@@ -1,12 +1,13 @@
 {
-  "name": "First-API-Project",
-  "version": "1.0.0",
+  "name": "medis-backend",
+  "version": "2.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "./server.js",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx nodemon index",
-    "start": "node index"
+    "dev": "npx nodemon ./server.js",
+    "start": "node ./server.js"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,5 @@
   "engines": {
     "node": "22.11.0",
     "npm": "latest"
-  },
-  "type": "module"
+  }
 }
