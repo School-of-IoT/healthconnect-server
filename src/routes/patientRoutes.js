@@ -6,7 +6,7 @@ import {
   viewAdmin,
   fetchPatientData_ID,
   getGeoAPI
-} from '../controllers/patientControl';
+} from '../controllers/patientControl.js';
 
 const patientRoutes = express.Router();
 
