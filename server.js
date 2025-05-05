@@ -1,6 +1,6 @@
 require('dotenv').config()
 const patientRoutes = require('./src/routes/patientRoutes');
-const v1Route = require('./index');
+// const v1Route = require('./index');
 
 const express = require("express");
 const connectDB = require("./connection");
@@ -22,7 +22,7 @@ app.get("/", async (req, res) => {
 }); 
 
 app.use('/api/v2/patient', patientRoutes);
-app.use('/api/v1/patient', v1Route);
+// app.use('/api/v1/patient', v1Route);
 
 // Handle all other requests on the server unmatched with below requests
 app.get('*', function(req, res) {
