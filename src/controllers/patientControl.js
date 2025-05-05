@@ -10,7 +10,7 @@ const adminkey = process.env.ADMINKEY;
 const crypto = require("crypto").createHmac;
 
 // AdminView
-export const viewAdmin =  async (req, res) => {
+const viewAdmin =  async (req, res) => {
     const patient = await patientModel.find();
     if (!patient){
         return res.json ({message: "Not Avalaible"});
@@ -19,7 +19,7 @@ export const viewAdmin =  async (req, res) => {
 }; 
 
 
-export const fetchPatientData_ID = async (req, res) => {
+const fetchPatientData_ID = async (req, res) => {
     try{
         const { _id } = req.params;
         const patient = await patientModel.findById(_id);
@@ -34,7 +34,7 @@ export const fetchPatientData_ID = async (req, res) => {
 };
 
 
-export const getGeoAPI = async (req, res) => {
+const getGeoAPI = async (req, res) => {
     try{
         const { user } = req.params;
         const patient = await patientModel.find({user: user});
@@ -48,3 +48,5 @@ export const getGeoAPI = async (req, res) => {
         return res.status(500).json({error: error.message});
     }   
 };
+
+module.exports = {viewAdmin,fetchPatientData_ID, getGeoAPI}
