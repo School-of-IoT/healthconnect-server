@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const patientModel = require("../models/patientModel");
 
-const connectDB = require("./connection");
+const connectDB = require("../../connection");
 
 //secret handling
 const secret = process.env.CRYPTO_SECRET;
