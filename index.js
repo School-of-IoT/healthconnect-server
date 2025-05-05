@@ -21,6 +21,23 @@ admin.initializeApp({
       universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN
     })
   });
+const admin = require('firebase-admin');
+
+// Firebase Admin initialization
+admin.initializeApp({
+    credential: admin.credential.cert({
+      type: process.env.FIREBASE_TYPE,
+      project_id: process.env.FIREBASE_PROJECT_ID,
+      private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      client_email: process.env.FIREBASE_CLIENT_EMAIL,
+      client_id: process.env.FIREBASE_CLIENT_ID,
+      auth_uri: process.env.FIREBASE_AUTH_URI,
+      token_uri: process.env.FIREBASE_TOKEN_URI,
+      auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
+      client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
+      universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN
+    })
+  });
 
 
 //secret handling
@@ -290,36 +307,6 @@ app.put("/patient/update-health/:_id", async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
   });
-
-// app.get("/med-data", async (req, res) => {
-//     const token = req.headers.authorization?.split(' ')[1];
-
-//     if (!token) {
-//         return res.status(401).json({ message: "No token provided" });
-//     }
-
-//     try {
-//         // Verify Firebase Token
-//         const decodedToken = await admin.auth().verifyIdToken(token);
-//         const userEmail = decodedToken.email;
-//         if (!userEmail) {
-//             return res.status(400).json({ message: "Email not found in token" });
-//         }
-      
-//         // Fetch Patient Data Using Email
-//         const patient = await patientModel.findOne({ Email: userEmail });
-
-//         if (!patient) {
-//             return res.status(404).json({ message: "No patient data found" });
-//         }
-
-//         return res.json ({ patient });
-//     } catch (error) {
-//         console.error("Error fetching patient data:", error);
-//         return res.status(500).json({ message: error.message });
-//     }
-//     });
-  
 
 app.get("/med-data", async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
