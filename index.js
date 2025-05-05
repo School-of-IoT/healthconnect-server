@@ -293,33 +293,70 @@ app.put("/patient/update-health/:_id", async (req, res) => {
 
 app.get("/med-data", async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
-
-    if (!token) {
-        return res.status(401).json({ message: "No token provided" });
-    }
-
-    try {
-        // Verify Firebase Token
-        const decodedToken = await admin.auth().verifyIdToken(token);
-        const userEmail = decodedToken.email;
-        if (!userEmail) {
-            return res.status(400).json({ message: "Email not found in token" });
-        }
-      
-        // Fetch Patient Data Using Email
-        const patient = await patientModel.findOne({ Email: userEmail });
-
-        if (!patient) {
-            return res.status(404).json({ message: "No patient data found" });
-        }
-
-        return res.json ({ patient });
-    } catch (error) {
-        console.error("Error fetching patient data:", error);
-        return res.status(500).json({ message: error.message });
-    }
-    });
   
+    if (!token) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+  
+    try {
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      const userEmail = decodedToken.email;
+  
+      if (!userEmail) {
+        return res.status(400).json({ message: "Email not found in token" });
+      }
+  
+      const patient = await patientModel.findOne({ Email: userEmail });
+  
+      if (!patient) {
+        return res.status(404).json({ message: "No patient data found" });
+      }
+  
+      const { from, to, q } = req.query;
+    //   console.log("Incoming Query:", { from, to, q });
+  
+      let fromDate, toDate;
+  
+        if (q === "dashboard") {
+        toDate = new Date();
+        fromDate = new Date();
+        fromDate.setDate(toDate.getDate() - 7);
+      } else if (from && to) {
+        fromDate = new Date(from);
+        toDate = new Date(to);
+      }
+  
+      if (fromDate && toDate) {
+        // console.log("From Date:", fromDate);
+        // console.log("To Date:", toDate);
+
+        const health = {};
+        const healthData = patient.healthData || {};
+  
+        for (const key in healthData) {
+          if (Array.isArray(healthData[key])) {
+            health[key] = healthData[key].filter(item => {
+              const itemDate = new Date(item.date);
+              return itemDate >= fromDate && itemDate <= toDate;
+            });
+          }
+        }
+  
+        console.log("Filtered Health Data:", health);
+
+  
+        return res.json(health);
+      } else {
+        // No filtering
+        return res.status(201).json({  message: "No data found" });
+      }
+  
+    } catch (error) {
+      console.error("Error fetching patient data:", error);
+      return res.status(500).json({ message: error.message });
+    }
+  });
+
 
 // DELETE
 // route: /patient/delete/:_id
