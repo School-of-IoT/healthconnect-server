@@ -25,5 +25,6 @@
   "engines": {
     "node": "22.11.0",
     "npm": "latest"
-  }
+  },
+  "type": "module"
 }
