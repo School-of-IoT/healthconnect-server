@@ -238,11 +238,11 @@ v1Route.put("/patient/update/:_id", async (req, res) => {
 
 
 // PUT
-// route: /patient/update-health/:_id
+// route: /update-health/:_id
 // description: Update health attributes (StepCount, Water, sleepHours, BPM)
 // e-parameter: _id 
 // request body: healthData object
-v1Route.put("/patient/update-health/:_id", async (req, res) => {
+v1Route.put("/update-health/:_id", async (req, res) => {
     try {
       const { _id } = req.params;
       const { healthData } = req.body;
