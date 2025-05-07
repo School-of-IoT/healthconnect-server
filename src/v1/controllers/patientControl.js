@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const patientModel = require("../models/patientModel");
+const patientModel = require("../../models/patientModel");
 const secret = process.env.CRYPTO_SECRET;
 const crypto = require("crypto").createHmac;
 
