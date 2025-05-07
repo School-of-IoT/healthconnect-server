@@ -1,21 +1,21 @@
-import express from 'express';
-import {
-  registerUser,
-  loginUser,
-  getUserProfile,
-  updateUserProfile,
-  deleteUser,
-} from '../controllers/userController.js';
-import { protect } from '../middlewares/authMiddleware.js';
+require("dotenv").config();
+const express = require("express");
+const adminkey = process.env.ADMINKEY;
 
-const router = express.Router();
+const { createDevToken, getMQTTConfig_Portal, getMQTTConfig_DevToken, 
+          create_DeviceNode, get_DeviceNode, updateHealthData, 
+          delete_DeviceNode } = require('../controllers/deviceControl');
 
-router.post('/signup', registerUser);
-router.post('/login', loginUser);
-router
-  .route('/profile')
-  .get(protect, getUserProfile)
-  .put(protect, updateUserProfile)
-  .delete(protect, deleteUser);
+const deviceRoutes = express.Router();
 
-export default router;
+deviceRoutes.get("/devtkn/create", createDevToken);
+
+deviceRoutes.get("/devtkn/portal", getMQTTConfig_Portal);
+deviceRoutes.get("/devtkn/device", getMQTTConfig_DevToken);
+
+deviceRoutes.get("/node/create", create_DeviceNode);
+deviceRoutes.get("/node/device", get_DeviceNode);
+deviceRoutes.get("/health/update", updateHealthData);
+deviceRoutes.get("/node/delete", delete_DeviceNode);
+
+module.exports =  deviceRoutes;

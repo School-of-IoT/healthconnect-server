@@ -1,29 +1,34 @@
 require("dotenv").config();
 const express = require("express");
-
-const app = express();
 const adminkey = process.env.ADMINKEY;
 
 const {
-  viewAdmin,
-  fetchPatientData_ID,
-  getGeoAPI
-} = require('../controllers/patientControl');
+        viewAdmin, fetchPatientData_ID, login, signup, 
+        data, updatePatientData, deletePatientData, updateHealthData,
+        getHealthData
+      } = require('../controllers/patientControl');
 
 const patientRoutes = express.Router();
 
-//Important Headers for public uses
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  res.header("Access-Control-Allow-Methods", "*");
-  next();
-});
 
+// patientRoutes.get("/"+adminkey, viewAdmin);
 
-patientRoutes.get("/"+adminkey, viewAdmin);
-patientRoutes.get("/patient/:_id", fetchPatientData_ID);
-patientRoutes.get("/geo_locate/:user", getGeoAPI);
+patientRoutes.get("/signup", signup);
+patientRoutes.get("/login", login);
 
+// patientRoutes.get("/data", data);
+// patientRoutes.get("/patient/:_id", fetchPatientData_ID);
+
+// Settings - Update Profile
+patientRoutes.put("/update/:_id", updatePatientData);
+
+// Permanently Delete Account
+patientRoutes.delete("/delete/:_id", deletePatientData);
+
+// Update Daily Health Data
+patientRoutes.put("/update-health/:_id", updateHealthData);
+
+// Get Data - QueryFilter for Graph
+patientRoutes.get("/med-data", getHealthData)
 
 module.exports =  patientRoutes;
