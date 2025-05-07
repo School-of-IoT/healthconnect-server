@@ -13,7 +13,7 @@ const patientRoutes = express.Router();
 
 // patientRoutes.get("/"+adminkey, viewAdmin);
 
-patientRoutes.get("/signup", signup);
+patientRoutes.post("/signup", signup);
 patientRoutes.get("/login", login);
 
 // patientRoutes.get("/data", data);

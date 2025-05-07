@@ -13,9 +13,9 @@ deviceRoutes.get("/devtkn/create", createDevToken);
 deviceRoutes.get("/devtkn/portal", getMQTTConfig_Portal);
 deviceRoutes.get("/devtkn/device", getMQTTConfig_DevToken);
 
-deviceRoutes.get("/node/create", create_DeviceNode);
+deviceRoutes.post("/node/create", create_DeviceNode);
 deviceRoutes.get("/node/device", get_DeviceNode);
-deviceRoutes.get("/health/update", updateHealthData);
-deviceRoutes.get("/node/delete", delete_DeviceNode);
+deviceRoutes.put("/health/update", updateHealthData);
+deviceRoutes.delete("/node/delete", delete_DeviceNode);
 
 module.exports =  deviceRoutes;
