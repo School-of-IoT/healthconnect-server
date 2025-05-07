@@ -1,8 +1,12 @@
 require("dotenv").config();
 
+const patientModel = require("../../models/patientModel");
+const secret = process.env.CRYPTO_SECRET;
+const crypto = require("crypto").createHmac;
 
 // Firebase Admin initialization
 const admin = require('firebase-admin');
+
 admin.initializeApp({
     credential: admin.credential.cert({
         type: process.env.FIREBASE_TYPE,
@@ -18,10 +22,6 @@ admin.initializeApp({
     })
 });
 
-
-const patientModel = require("../models/patientModel");
-const secret = process.env.CRYPTO_SECRET;
-const crypto = require("crypto").createHmac;
 
 // AdminView
 const viewAdmin =  async (req, res) => {
