@@ -240,7 +240,7 @@ const updateHealthData = async (req, res) => {
   try {
       const { _id } = req.params;
       const { healthData } = req.body;
-      const token = req.headers.['token'];
+      const token = req.headers['token'];
       console.log("Token->", token);
   
       if (!healthData || Object.keys(healthData).length === 0) {
