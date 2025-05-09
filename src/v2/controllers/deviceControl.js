@@ -7,7 +7,7 @@ const crypto = require("crypto").createHmac;
 
 
 // GET
-// route: /devtkn/create
+// route: /devtkn
 // description: To create new device token - stored in DB and used by device to receive mqtt details
 // q-parameter: user & pass
 const createDevToken = async (req, res) => {
@@ -47,10 +47,10 @@ const createDevToken = async (req, res) => {
 
 
 // GET
-// route: /devtkn/portal
-// description: (On Portal) To get MQTT-server URL, MQTT-user and MQTT-Pass, used for third party MQTT service
+// route: /devtkn
+// description: (On Portal) To get Device Token
 // q-parameter: user & token
-const getMQTTConfig_Portal = async (req, res) => {  
+const getDevToken = async (req, res) => {  
     try{
         const body = req.query;
         const user = body.user;
@@ -64,17 +64,15 @@ const getMQTTConfig_Portal = async (req, res) => {
             const valpass = patient[0].pass;
 
             //JIT(Just-in-time) handler
-            var date_ob = new Date();
-            var moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
+            let date_ob = new Date();
+            let moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
             const token = process.env.CRYPTO_TOKEN + moment;
             const auth_token = await crypto("sha256", token).update(valpass).digest("hex");
           
             if (auth_token == ch_token)
             {
-              let mqttserver = process.env.MQTTSERVER;
-              let mqttUser = process.env.MQTTUSER;
-              let mqttPass = process.env.MQTTPASS;
-              return res.json ({mqttserver: mqttserver, mqttUser: mqttUser, mqttPass: mqttPass});
+                // TODO: Add long term time based validity + valid bool
+                return res.json ({dev_token: patient[0].devtoken});
             }
             else{
               return res.json ({message: "Token does not match. Try to Login Again."});
@@ -86,36 +84,6 @@ const getMQTTConfig_Portal = async (req, res) => {
     }       
 };
 
-
-
-// GET
-// route: /devtkn/device
-// description: (On Device) To get MQTT-server URL, userName and password, used for third party MQTT service
-// q-parameter: user & devtoken
-const getMQTTConfig_DevToken = async (req, res) => {
-    try {
-        const body = req.query;
-        const dev_token = body.token;
-        const user = body.user;
-        const patient = await patientModel.find({user: user, devtoken: dev_token});
-        const check = (patient == []);
-      
-        if (!check){    
-            const valtoken = patient[0].devtoken;
-            const valuser = patient[0].user;   
-            
-            if ((valtoken == dev_token) && (valuser == user)){
-                let mqttserver = process.env.MQTTSERVER;
-                let mqttUser = process.env.MQTTUSER;
-                let mqttPass = process.env.MQTTPASS;
-                return res.json ({mqttserver: mqttserver, mqttUser: mqttUser, mqttPass: mqttPass});            
-            }          
-        }     
-    } 
-    catch(error) {
-        return res.status(500).json({error: error.message});
-    }    
-};
 
 
 // POST
@@ -276,5 +244,5 @@ const delete_DeviceNode = async (req, res) => {
 
 
 
-module.exports = {  createDevToken, getMQTTConfig_Portal, getMQTTConfig_DevToken, 
-                    create_DeviceNode, get_DeviceNode, updateHealthData, delete_DeviceNode }
+module.exports = {  createDevToken, create_DeviceNode, get_DeviceNode, 
+                    updateHealthData, delete_DeviceNode, getDevToken }
