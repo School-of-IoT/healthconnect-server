@@ -23,7 +23,7 @@ admin.initializeApp({
 });
 
 
-function getJIT_Auth() {
+function getJIT_Auth(valpass) {
   let date_ob = new Date();
   let moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
   let token = process.env.CRYPTO_TOKEN + moment;
@@ -252,7 +252,7 @@ const updateHealthData = async (req, res) => {
         return res.status(404).json({ error: "Patient not found" });
       }
 
-      let auth_token = getJIT_Auth();
+      let auth_token = getJIT_Auth(patient[0].pass);
 
       if (auth_token == token){
         Object.keys(healthData).forEach((key) => {
