@@ -241,6 +241,7 @@ const updateHealthData = async (req, res) => {
       const { _id } = req.params;
       const { healthData } = req.body;
       const token = req.headers.authorization?.split(' ')[1];
+      console.log("Token->", token);
   
       if (!healthData || Object.keys(healthData).length === 0) {
         return res.status(400).json({ error: "Invalid or empty health data" });
@@ -254,6 +255,7 @@ const updateHealthData = async (req, res) => {
 
       let valpass = patient[0].pass;
       let auth_token = getJIT_Auth(valpass);
+      console.log("AuthToken->", auth_token);
 
       if (auth_token == token){
         Object.keys(healthData).forEach((key) => {
