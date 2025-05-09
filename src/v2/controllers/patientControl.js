@@ -252,7 +252,8 @@ const updateHealthData = async (req, res) => {
         return res.status(404).json({ error: "Patient not found" });
       }
 
-      let auth_token = getJIT_Auth(patient[0].pass);
+      let valpass = patient[0].pass;
+      let auth_token = getJIT_Auth(valpass);
 
       if (auth_token == token){
         Object.keys(healthData).forEach((key) => {

@@ -16,7 +16,7 @@ const patientRoutes = express.Router();
 patientRoutes.post("/signup", signup);
 patientRoutes.get("/login", login);
 
-// patientRoutes.get("/data", data);
+patientRoutes.get("/data", data);
 // patientRoutes.get("/patient/:_id", fetchPatientData_ID);
 
 // Settings - Update Profile
