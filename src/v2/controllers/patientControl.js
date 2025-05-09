@@ -23,6 +23,15 @@ admin.initializeApp({
 });
 
 
+function getJIT_Auth() {
+  let date_ob = new Date();
+  let moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
+  let token = process.env.CRYPTO_TOKEN + moment;
+  let auth_token = crypto("sha256", token).update(valpass).digest("hex");
+  return auth_token;
+}
+
+
 // AdminView
 const viewAdmin =  async (req, res) => {
     const patient = await patientModel.find();
@@ -228,46 +237,47 @@ const deletePatientData = async (req, res) => {
 };
 
 const updateHealthData = async (req, res) => {
-    try {
-        const { user, token: dev_token } = req.query;
-        const { healthData } = req.body;
-    
-        if (!healthData || Object.keys(healthData).length === 0) {
-          return res.status(400).json({ error: "Invalid or empty health data" });
-        }
-    
-        const patient = await patientModel.findOne({ user, devtoken: dev_token });
-    
-        if (!patient) {
-          return res.status(404).json({ error: "Patient not found or token invalid" });
-        }
-    
-        // Prepare the update payload
-        const updatePayload = {};
+  try {
+      const { _id } = req.params;
+      const { healthData } = req.body;
+      const token = req.headers.authorization?.split(' ')[1];
+  
+      if (!healthData || Object.keys(healthData).length === 0) {
+        return res.status(400).json({ error: "Invalid or empty health data" });
+      }
+  
+      const patient = await patientModel.findById(_id);
+  
+      if (!patient) {
+        return res.status(404).json({ error: "Patient not found" });
+      }
+
+      let auth_token = getJIT_Auth();
+
+      if (auth_token == token){
         Object.keys(healthData).forEach((key) => {
           if (Array.isArray(healthData[key])) {
             healthData[key].forEach((item) => {
               if (!item.date || item.value === undefined) {
                 throw new Error(`Invalid data for ${key}. Each entry must have 'date' and 'value'.`);
               }
-              updatePayload[`healthData.${key}`] = updatePayload[`healthData.${key}`] || [];
-              updatePayload[`healthData.${key}`].push(item);
+              patient.healthData[key].push(item);
             });
           }
         });
     
-        // Update without device schema validation
-        const updatedPatient = await patientModel.findOneAndUpdate(
-          { user, devtoken: dev_token },
-          { $set: updatePayload },
-          { new: true }
-        );
-    
+        await patient.save();
+        
         return res.json({ message: "Health Updated 💙" });
-
-      } catch (error) {
-        return res.status(500).json({ error: error.message });
       }
+      else{
+        return res.status(500).json ({message: "Token does not match. Try to Login Again."});
+      }
+      
+  
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
 };
 
 

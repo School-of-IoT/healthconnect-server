@@ -26,9 +26,9 @@ patientRoutes.put("/update/:_id", updatePatientData);
 patientRoutes.delete("/delete/:_id", deletePatientData);
 
 // Update Daily Health Data
-patientRoutes.put("/update-health/:_id", updateHealthData);
+patientRoutes.put("/health/:_id", updateHealthData);
 
 // Get Data - QueryFilter for Graph
-patientRoutes.get("/med-data", getHealthData)
+patientRoutes.get("/health", getHealthData)
 
 module.exports =  patientRoutes;
