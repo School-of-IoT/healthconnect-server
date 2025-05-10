@@ -286,7 +286,7 @@ const getHealthData = async (req, res) => {
   if (AuthType == 'JIT'){
     var ch_token = req.headers['token'];
     var user = req.headers['user'];
-    var  = await patientModel.find({user: user});
+    var patient = await patientModel.find({user: user});
     console.log("Patient -> ", patient);
     if (!patient) {
       return res.status(404).json({ message: "No patient data found" });
