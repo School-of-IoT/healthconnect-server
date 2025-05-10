@@ -326,6 +326,7 @@ const getHealthData = async (req, res) => {
     } else if (from && to) {
       fromDate = new Date(from);
       toDate = new Date(to);
+      toDate.setHours(23, 59, 59, 999); // Include full 'to' day
     }
 
     if (fromDate && toDate) {
