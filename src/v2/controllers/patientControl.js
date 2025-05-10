@@ -282,59 +282,69 @@ const updateHealthData = async (req, res) => {
 
 
 const getHealthData = async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1];
-  
-    if (!token) {
-      return res.status(401).json({ message: "No token provided" });
+  const AuthType = req.headers['AuthType'];
+  if (AuthType == 'JIT'){
+    var token = req.headers['token'];
+    var user = req.headers['user'];
+    var patient = await patientModel.find({user: user});
+    
+    let valpass = patient.pass;
+    let auth_token = getJIT_Auth(valpass);
+    if (auth_token != token){
+      return res.status(500).json ({message: "Token does not match. Try to Login Again."});
     }
-  
-    try {
-      const decodedToken = await admin.auth().verifyIdToken(token);
-      const userEmail = decodedToken.email;
-  
-      if (!userEmail) {
-        return res.status(400).json({ message: "Email not found in token" });
-      }
-  
-      const patient = await patientModel.findOne({ Email: userEmail });
-  
-      if (!patient) {
-        return res.status(404).json({ message: "No patient data found" });
-      }
-      let fromDate, toDate;
-  
-        if (q === "dashboard") {
-        toDate = new Date();
-        fromDate = new Date();
-        fromDate.setDate(toDate.getDate() - 7);
-      } else if (from && to) {
-        fromDate = new Date(from);
-        toDate = new Date(to);
-      }
-  
-      if (fromDate && toDate) {
+  }
+  else{
+    var token = req.headers.authorization?.split(' ')[1];
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const userEmail = decodedToken.email;
 
-        const health = {};
-        const healthData = patient.healthData || {};
-  
-        for (const key in healthData) {
-          if (Array.isArray(healthData[key])) {
-            health[key] = healthData[key].filter(item => {
-              const itemDate = new Date(item.date);
-              return itemDate >= fromDate && itemDate <= toDate;
-            });
-          }
-        }  
-        return res.json(health);
-      } else {
-        // No filtering
-        return res.status(201).json({  message: "No data found" });
-      }
-  
-    } catch (error) {
-      console.error("Error fetching patient data:", error);
-      return res.status(500).json({ message: error.message });
+    if (!userEmail) {
+      return res.status(400).json({ message: "Email not found in token" });
     }
+    var patient = await patientModel.findOne({ Email: userEmail });
+  }
+  
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  try {
+    if (!patient) {
+      return res.status(404).json({ message: "No patient data found" });
+    }
+    const { from, to, q } = req.query;
+    let fromDate, toDate;
+    if (q === "dashboard") {
+      toDate = new Date();
+      fromDate = new Date();
+      fromDate.setDate(toDate.getDate() - 7);
+    } else if (from && to) {
+      fromDate = new Date(from);
+      toDate = new Date(to);
+    }
+
+    if (fromDate && toDate) {
+      const health = {};
+      const healthData = patient.healthData || {};
+      for (const key in healthData) {
+        if (Array.isArray(healthData[key])) {
+          health[key] = healthData[key].filter(item => {
+            const itemDate = new Date(item.date);
+            return itemDate >= fromDate && itemDate <= toDate;
+          });
+        }
+      }  
+      return res.json(health);
+    } else {
+      // No filtering
+      return res.status(201).json({  message: "No data found" });
+    }
+
+  } catch (error) {
+    console.error("Error fetching patient data:", error);
+    return res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports = { viewAdmin,fetchPatientData_ID, login, signup, data, 
