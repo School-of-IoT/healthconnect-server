@@ -178,13 +178,27 @@ const updatePatientData = async (req, res) => {
 
     try {
         const { _id } = req.params;
-        const { patientData } = req.body;
-        const updatepatient = await patientModel.findByIdAndUpdate(
-            _id,
-            { $set: patientData},
-            { new: true}     
-        );
-        return res.json({ message: "Patient Data updated!" });
+        const ch_token = req.query.token;
+
+        const patient = await patientModel.findById(_id);
+        let date_ob = new Date();
+        let moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
+        const token = process.env.CRYPTO_TOKEN + moment;
+        const auth_token = crypto("sha256", token).update(patient.pass).digest("hex");
+        
+        if (auth_token == ch_token) {
+            const { patientData } = req.body;
+            await patientModel.findByIdAndUpdate(
+                _id,
+                { $set: patientData},
+                { new: true}     
+            );
+            return res.json({ message: "Patient Data updated!" });
+        }
+        else{
+            return res.status(500).json ({message: "Token does not match. Try to Login Again."});
+        }
+        
     }
     catch(error){
         return res.status(500).json({error: error.message});
@@ -200,8 +214,22 @@ const updatePatientData = async (req, res) => {
 const deletePatientData = async (req, res) => {
     try{
         const { _id } = req.params;
-        await patientModel.findByIdAndDelete(_id);
-        return res.json({message: "Patient Deleted 🔪"});
+        const ch_token = req.query.token;
+
+        const patient = await patientModel.findById(_id);
+        let date_ob = new Date();
+        let moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
+        const token = process.env.CRYPTO_TOKEN + moment;
+        const auth_token = crypto("sha256", token).update(patient.pass).digest("hex");
+        
+        if (auth_token == ch_token) {
+            await patientModel.findByIdAndDelete(_id);
+            return res.json({message: "Patient Deleted 🔪"});
+        }
+        else{
+            return res.status(500).json ({message: "Token does not match. Try to Login Again."});
+        }
+        
     }
     catch(error){
         return res.status(500).json({error: error.message});

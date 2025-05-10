@@ -10,14 +10,16 @@ const {
 
 const patientRoutes = express.Router();
 
-
+// AdminOnly View
 // patientRoutes.get("/"+adminkey, viewAdmin);
+// TODO: Org Based Admin View
 
+// Account - Create and Login
 patientRoutes.post("/signup", signup);
 patientRoutes.get("/login", login);
 
+// Profile - View Data
 patientRoutes.get("/data", data);
-// patientRoutes.get("/patient/:_id", fetchPatientData_ID);
 
 // Settings - Update Profile
 patientRoutes.put("/update/:_id", updatePatientData);
@@ -29,6 +31,6 @@ patientRoutes.delete("/delete/:_id", deletePatientData);
 patientRoutes.put("/health/:_id", updateHealthData);
 
 // Get Data - QueryFilter for Graph
-patientRoutes.get("/health", getHealthData)
+patientRoutes.get("/health", getHealthData);
 
 module.exports =  patientRoutes;
