@@ -284,21 +284,23 @@ const updateHealthData = async (req, res) => {
 const getHealthData = async (req, res) => {
   const AuthType = req.headers['authtype'];
   if (AuthType == 'JIT'){
-    var token = req.headers['token'];
+    var ch_token = req.headers['token'];
     var user = req.headers['user'];
     var patient = await patientModel.find({user: user});
+    console.log("Patient -> ", patient);
     if (!patient) {
       return res.status(404).json({ message: "No patient data found" });
     }
     let valpass = patient.pass;
+    console.log("Pass -> ", pass);
     let auth_token = getJIT_Auth(valpass);
-    if (auth_token != token){
+    if (auth_token != ch_token){
       return res.status(500).json ({message: "Token does not match. Try to Login Again."});
     }
   }
   else{
-    var token = req.headers.authorization?.split(' ')[1];
-    const decodedToken = await admin.auth().verifyIdToken(token);
+    var ch_token = req.headers.authorization?.split(' ')[1];
+    const decodedToken = await admin.auth().verifyIdToken(ch_token);
     const userEmail = decodedToken.email;
 
     if (!userEmail) {
@@ -307,7 +309,7 @@ const getHealthData = async (req, res) => {
     var patient = await patientModel.findOne({ Email: userEmail });
   }
   
-  if (!token) {
+  if (!ch_token) {
     return res.status(401).json({ message: "No token provided" });
   }
 
