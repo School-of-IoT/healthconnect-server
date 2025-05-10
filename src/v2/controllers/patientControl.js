@@ -282,12 +282,14 @@ const updateHealthData = async (req, res) => {
 
 
 const getHealthData = async (req, res) => {
-  const AuthType = req.headers['AuthType'];
+  const AuthType = req.headers['authtype'];
   if (AuthType == 'JIT'){
     var token = req.headers['token'];
     var user = req.headers['user'];
     var patient = await patientModel.find({user: user});
-    
+    if (!patient) {
+      return res.status(404).json({ message: "No patient data found" });
+    }
     let valpass = patient.pass;
     let auth_token = getJIT_Auth(valpass);
     if (auth_token != token){
