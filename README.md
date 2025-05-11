@@ -114,7 +114,7 @@ healthconnect-server/
 
 ---
 
-## 💬 Status
+## 💬 API Status
 
-![API Test - Dev](https://github.com/School-of-IoT/healthconnect-server/actions/workflows/test.yml/badge.svg?branch=dev)
+[![API Test - Dev](https://github.com/School-of-IoT/healthconnect-server/actions/workflows/test.yml/badge.svg?branch=dev)](https://github.com/School-of-IoT/healthconnect-server/blob/dev/.github/workflows/test.yml)
 
