@@ -5,6 +5,7 @@
   "main": "./server.js",
   "type": "commonjs",
   "scripts": {
+    "test:api": "newman run ./tests/p-collection.json",
     "dev": "npx nodemon ./server.js",
     "start": "node ./server.js"
   },

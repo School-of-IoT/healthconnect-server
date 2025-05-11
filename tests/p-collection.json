@@ -1,0 +1,487 @@
+{
+    "info": {
+        "_postman_id": "d648a440-4fbc-4477-8e3c-b8903b403ff4",
+        "name": "Medis-New",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "V1 - SignUp",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "https://dev-medis-server.onrender.com/api/v1/patient/signup",
+                    "path": [
+                        "api",
+                        "v1",
+                        "patient",
+                        "signup"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "dev-medis-server",
+                        "onrender",
+                        "com"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "*/*",
+                        "disabled": true
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "Thunder Client (https://www.thunderclient.com)",
+                        "disabled": true
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"newpatient\": {\n    \"name\": \"Tester3\",\n    \"Address\": \"nnna\",\n    \"Email\": \"test.test@test.com\",\n    \"pass\": \"Test@123\",\n    \"user\": \"test3\"\n  }\n}"
+                }
+            }
+        },
+        {
+            "name": "V1 - Login",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "https://dev-medis-server.onrender.com/api/v1/login?user=test3&pass=Test@123",
+                    "query": [
+                        {
+                            "key": "user",
+                            "value": "test3"
+                        },
+                        {
+                            "key": "pass",
+                            "value": "Test@123"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "v1",
+                        "login"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "dev-medis-server",
+                        "onrender",
+                        "com"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "*/*",
+                        "disabled": true
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "Thunder Client (https://www.thunderclient.com)",
+                        "disabled": true
+                    }
+                ]
+            }
+        },
+        {
+            "name": "V1 - Get IPGeo API",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "https://dev-medis-server.onrender.com/api/v1/geo_locate/test2",
+                    "path": [
+                        "api",
+                        "v1",
+                        "geo_locate",
+                        "test2"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "dev-medis-server",
+                        "onrender",
+                        "com"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "V1 - Get Patient Data",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "https://dev-medis-server.onrender.com/api/v1/data?token=1624d79bbf7509c33bd5e7e41260b643b599fb9434b88734c8c3c96084cfd55d&user=test2",
+                    "query": [
+                        {
+                            "key": "token",
+                            "value": "1624d79bbf7509c33bd5e7e41260b643b599fb9434b88734c8c3c96084cfd55d"
+                        },
+                        {
+                            "key": "user",
+                            "value": "test2"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "v1",
+                        "data"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "dev-medis-server",
+                        "onrender",
+                        "com"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "*/*",
+                        "disabled": true
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "Thunder Client (https://www.thunderclient.com)",
+                        "disabled": true
+                    }
+                ]
+            }
+        },
+        {
+            "name": "V1 - Update Patient Data",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "https://dev-medis-server.onrender.com/api/v1/patient/update/681fa63856f1366f9da0a49f?token=1624d79bbf7509c33bd5e7e41260b643b599fb9434b88734c8c3c96084cfd55d",
+                    "query": [
+                        {
+                            "key": "token",
+                            "value": "1624d79bbf7509c33bd5e7e41260b643b599fb9434b88734c8c3c96084cfd55d"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "v1",
+                        "patient",
+                        "update",
+                        "681fa63856f1366f9da0a49f"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "dev-medis-server",
+                        "onrender",
+                        "com"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "*/*",
+                        "disabled": true
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "Thunder Client (https://www.thunderclient.com)",
+                        "disabled": true
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n    \"patientData\":{\n        \"BMI\":\t99\n    }\n}"
+                }
+            }
+        },
+        {
+            "name": "V1 - Delete Patient Profile",
+            "request": {
+                "method": "DELETE",
+                "url": {
+                    "raw": "https://dev-medis-server.onrender.com/api/v1/patient/delete/681fa63856f1366f9da0a49f?token=1624d79bbf7509c33bd5e7e41260b643b599fb9434b88734c8c3c96084cfd55d",
+                    "query": [
+                        {
+                            "key": "token",
+                            "value": "1624d79bbf7509c33bd5e7e41260b643b599fb9434b88734c8c3c96084cfd55d"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "v1",
+                        "patient",
+                        "delete",
+                        "681fa63856f1366f9da0a49f"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "dev-medis-server",
+                        "onrender",
+                        "com"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "*/*",
+                        "disabled": true
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "Thunder Client (https://www.thunderclient.com)",
+                        "disabled": true
+                    }
+                ]
+            }
+        },
+        {
+            "name": "V2 - SignUp",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "https://dev-medis-server.onrender.com/api/v2/signup",
+                    "path": [
+                        "api",
+                        "v2",
+                        "signup"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "dev-medis-server",
+                        "onrender",
+                        "com"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "*/*",
+                        "disabled": true
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "Thunder Client (https://www.thunderclient.com)",
+                        "disabled": true
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"newpatient\": {\n    \"name\": \"Tester1\",\n    \"Address\": \"nnna\",\n    \"Email\": \"test.test@test.com\",\n    \"pass\": \"Test@123\",\n    \"user\": \"test2\"\n  }\n}"
+                }
+            }
+        },
+        {
+            "name": "V2 - Login",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "https://dev-medis-server.onrender.com/api/v2/login?user=test2&pass=Test@123",
+                    "query": [
+                        {
+                            "key": "user",
+                            "value": "test2"
+                        },
+                        {
+                            "key": "pass",
+                            "value": "Test@123"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "v2",
+                        "login"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "dev-medis-server",
+                        "onrender",
+                        "com"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "*/*",
+                        "disabled": true
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "Thunder Client (https://www.thunderclient.com)",
+                        "disabled": true
+                    }
+                ]
+            }
+        },
+        {
+            "name": "V2 - Get HealthData - JIT",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "https://dev-medis-server.onrender.com/api/v2/health?q=dashboard",
+                    "query": [
+                        {
+                            "key": "q",
+                            "value": "dashboard"
+                        },
+                        {
+                            "key": "from",
+                            "value": "2025-05-01",
+                            "disabled": true
+                        },
+                        {
+                            "key": "to",
+                            "value": "2025-05-10",
+                            "disabled": true
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "v2",
+                        "health"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "dev-medis-server",
+                        "onrender",
+                        "com"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "user",
+                        "value": "test2"
+                    },
+                    {
+                        "key": "token",
+                        "value": "6ef3612d19f126de3f3144d79f1f8c572f0df523748c557b63fc554f9c59bb16"
+                    },
+                    {
+                        "key": "authtype",
+                        "value": "JIT"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "*/*",
+                        "disabled": true
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "Thunder Client (https://www.thunderclient.com)",
+                        "disabled": true
+                    }
+                ]
+            }
+        },
+        {
+            "name": "V2 - Update Patient",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "https://dev-medis-server.onrender.com/api/v2/update/681d2d711a39c5869ddf3f92",
+                    "path": [
+                        "api",
+                        "v2",
+                        "update",
+                        "681d2d711a39c5869ddf3f92"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "dev-medis-server",
+                        "onrender",
+                        "com"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "dev_token",
+                        "value": "10a4c7419ef5f117aac2ff54e61bc2cae9919a5c616494a6ac6557e926d356bd"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "*/*",
+                        "disabled": true
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "Thunder Client (https://www.thunderclient.com)",
+                        "disabled": true
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n    \"patientData\":{\n        \"BMI\":\t99\n    }\n}"
+                }
+            }
+        },
+        {
+            "name": "V2 - Update Health",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "https://dev-medis-server.onrender.com/api/v2/health/681d2d711a39c5869ddf3f92",
+                    "path": [
+                        "api",
+                        "v2",
+                        "health",
+                        "681d2d711a39c5869ddf3f92"
+                    ],
+                    "protocol": "https",
+                    "host": [
+                        "dev-medis-server",
+                        "onrender",
+                        "com"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "token",
+                        "value": "e688001ae350df1b4b0e462d18aa23e65d9dd89548f749774b20c6acd7bf637f"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "*/*",
+                        "disabled": true
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "Thunder Client (https://www.thunderclient.com)",
+                        "disabled": true
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"healthData\": {\n    \"StepCount\": [\n      {\n        \"date\": \"2025-05-10T02:05:41Z\",\n        \"value\": 531\n      }\n    ]\n  }\n}\n"
+                }
+            }
+        }
+    ]
+}
