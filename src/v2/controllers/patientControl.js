@@ -183,6 +183,7 @@ const getSimplifiedPatient = (originalPatient) => {
     WeightLoss: patient.WeightLoss,
     user: patient.user,
     devtoken: patient.devtoken,
+    devices: patient.devices,
     latestHealthData: {
       SBP: latestValue(patient.healthData?.SBP),
       DBP: latestValue(patient.healthData?.DBP),
