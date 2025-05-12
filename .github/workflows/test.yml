@@ -1,31 +1,42 @@
-name: Run Node.js Tests
+name: API Test - Dev
 
 on:
   push:
-    branches: [ feature/revamp-for-v2 ]
+    branches: [master, dev]
   pull_request:
-    branches: [ dev ]
-  workflow_dispatch:
+    branches: [master, dev]
 
 jobs:
-  test:
+  test-api:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
-      - name: ⬇️ Checkout repository
+      - name: 📥 Checkout repository
         uses: actions/checkout@v3
 
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🧪 Run tests
-        run: npm test
+      - name: 🧪 Install Newman
+        run: npm install --save-dev newman
+
+      - name: 🚀 Start the server in background
+        run: |
+          nohup npm start &
+          sleep 10 
+
+      - name: 🧪 Run Postman Collection
+        run: |
+          npx newman run ./tests/p-collection.json \
+            --reporter-json-export newman-report.json
+
+      - name: 📤 Upload Newman Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-report
+          path: newman-report.json
