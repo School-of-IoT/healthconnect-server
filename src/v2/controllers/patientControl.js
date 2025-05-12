@@ -210,13 +210,13 @@ const lastdata = async (req, res) => {
         const body = req.query;
         const user = body.user;
         const ch_token = body.token;
-        const patient = await patientModel.find({user: user});
+        const patient_data = await patientModel.find({user: user});
         
-        if (!patient){
+        if (!patient_data){
             return res.status(500).json ({message: "No Data Found"});
         }
         else{
-            const valpass = patient[0].pass;
+            const valpass = patient_data[0].pass;
             //JIT(Just-in-time) handler
             var date_ob = new Date();
             var moment = date_ob.getDate()+'-'+date_ob.getMonth()+'/'+date_ob.getHours();
@@ -225,13 +225,13 @@ const lastdata = async (req, res) => {
           
             if (auth_token == ch_token)
             {
-              // return res.json ({ patient });
+              // return res.json ({ patient_data });
               try {
-                if (!patient) {
+                if (!patient_data) {
                   return res.status(404).json({ message: "No patient data found" });
                 }
-                const result = getSimplifiedPatient({ patient });
-                return res.json ({ result });
+                const patient = getSimplifiedPatient({ patient_data });
+                return res.json ({ patient });
                 
               } catch (error) {
                 console.error("Error fetching patient data:", error);
