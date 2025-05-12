@@ -230,7 +230,7 @@ const lastdata = async (req, res) => {
                 if (!patient) {
                   return res.status(404).json({ message: "No patient data found" });
                 }
-                const result = getSimplifiedPatient(patient);
+                const result = getSimplifiedPatient(patient[0]);
                 return res.json ({ result });
                 
               } catch (error) {
