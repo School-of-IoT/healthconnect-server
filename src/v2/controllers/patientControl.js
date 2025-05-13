@@ -449,5 +449,5 @@ const getHealthData = async (req, res) => {
 
 module.exports = { viewAdmin,fetchPatientData_ID, login, signup, data, 
                    updatePatientData, deletePatientData, updateHealthData,
-                   getHealthData, lastdata 
+                   getHealthData, lastdata
                  }
