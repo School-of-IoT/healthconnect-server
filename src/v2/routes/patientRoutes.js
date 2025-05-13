@@ -5,7 +5,7 @@ const adminkey = process.env.ADMINKEY;
 const {
         viewAdmin, fetchPatientData_ID, login, signup, 
         data, updatePatientData, deletePatientData, updateHealthData,
-        getHealthData
+        getHealthData, lastdata
       } = require('../controllers/patientControl');
 
 const patientRoutes = express.Router();
@@ -20,6 +20,9 @@ patientRoutes.get("/login", login);
 
 // Profile - View Data
 patientRoutes.get("/data", data);
+
+// Patient - View LastData
+patientRoutes.get("/lastdata", lastdata);
 
 // Settings - Update Profile
 patientRoutes.put("/update/:_id", updatePatientData);
