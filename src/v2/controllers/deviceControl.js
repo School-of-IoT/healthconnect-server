@@ -157,7 +157,7 @@ const get_DeviceNode = async (req, res) => {
 
 
 // PUT
-// route: /health/update
+// route: /health
 // description: Update health attributes (StepCount, Water, sleepHours, BPM)
 // q-parameter: user, dev_token
 // request body: healthData object
@@ -169,13 +169,14 @@ const updateHealthData = async (req, res) => {
         if (!healthData || Object.keys(healthData).length === 0) {
           return res.status(400).json({ error: "Invalid or empty health data" });
         }
-    
+        
         const patient = await patientModel.findOne({ user, devtoken: dev_token });
-    
+        
         if (!patient) {
           return res.status(404).json({ error: "Patient not found or token invalid" });
         }
-    
+        
+        return res.json({ message: patient, details: healthData }); 
         // Prepare the update payload
         const updatePayload = {};
         Object.keys(healthData).forEach((key) => {
