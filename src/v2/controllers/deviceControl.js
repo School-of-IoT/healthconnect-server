@@ -171,7 +171,6 @@ const updateHealthData = async (req, res) => {
         }
     
         const patient = await patientModel.findOne({ user, devtoken: dev_token });
-        console.log("VERB0SE: Patient found:", patient);
     
         if (!patient) {
           return res.status(404).json({ error: "Patient not found or token invalid" });
@@ -181,16 +180,12 @@ const updateHealthData = async (req, res) => {
         const updatePayload = {};
         Object.keys(healthData).forEach((key) => {
           if (Array.isArray(healthData[key])) {
-            console.log(`VERB0SE: Processing health data for key: ${healthData[key]}`);
-
-            // Validate each entry in the array
             healthData[key].forEach((item) => {
-                print(`VERB0SE: Validating item for key ${key}:`, item);
-                if (!item.date || item.value === undefined) {
-                    throw new Error(`Invalid data for ${key}. Each entry must have 'date' and 'value'.`);
-                }
-                updatePayload[`healthData.${key}`] = updatePayload[`healthData.${key}`] || [];
-                updatePayload[`healthData.${key}`].push(item);
+              if (!item.date || item.value === undefined) {
+                throw new Error(`Invalid data for ${key}. Each entry must have 'date' and 'value'.`);
+              }
+              updatePayload[`healthData.${key}`] = updatePayload[`healthData.${key}`] || [];
+              updatePayload[`healthData.${key}`].push(item);
             });
           }
         });
@@ -205,7 +200,7 @@ const updateHealthData = async (req, res) => {
         return res.json({ message: "Health Updated 💙" });
 
       } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message, details: healthData });
       }
 };
 
