@@ -19,7 +19,7 @@ const deviceSchema = new mongoose.Schema({
     },
     battery: {
       type: String,
-      required: true
+      required: false
     }
   }, { _id: false });
 
