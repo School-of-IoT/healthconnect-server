@@ -15,7 +15,7 @@ const deviceSchema = new mongoose.Schema({
     },
     lastUp: {
       type: String,
-      required: true
+      required: false
     },
     battery: {
       type: String,
