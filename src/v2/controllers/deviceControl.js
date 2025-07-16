@@ -169,6 +169,7 @@ const updateHealthData = async (req, res) => {
         if (!healthData || Object.keys(healthData).length === 0) {
           return res.status(400).json({ error: "Invalid or empty health data" });
         }
+        return res.json({ message: patient, details: healthData }); 
         
         const patient = await patientModel.findOne({ user, devtoken: dev_token });
         
@@ -176,7 +177,7 @@ const updateHealthData = async (req, res) => {
           return res.status(404).json({ error: "Patient not found or token invalid" });
         }
         
-        return res.json({ message: patient, details: healthData }); 
+        
         // Prepare the update payload
         const updatePayload = {};
         Object.keys(healthData).forEach((key) => {
