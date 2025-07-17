@@ -32,7 +32,7 @@ jobs:
 
       - name: 🧪 Run Postman Collection
         run: |
-          npx newman run ./tests/p-collection.json \
+          npx newman run ./tests/p-collection.json -r json \
             --reporter-json-export newman-report.json
 
       - name: 📤 Upload Newman Report
