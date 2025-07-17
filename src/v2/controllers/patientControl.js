@@ -194,7 +194,8 @@ const getSimplifiedPatient = (originalPatient) => {
       StepCount: latestValue(patient.healthData?.StepCount),
       Water: latestValue(patient.healthData?.Water),
       sleepHours: latestValue(patient.healthData?.sleepHours),
-      BPM: latestValue(patient.healthData?.BPM)
+      BPM: latestValue(patient.healthData?.BPM),
+      HRV: latestValue(patient.healthData?.HRV)
     }
   };
 
