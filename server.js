@@ -23,6 +23,9 @@ const apiLimiter = rateLimit({
 });
 
 const app = express();
+
+// Middleware to parse JSON bodies
+app.set('trust proxy', true);
 app.use(express.json());
 
 //Important Headers for public uses
